@@ -1,0 +1,9 @@
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/interfacemouna.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/install.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/install/local.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/install/strip.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/interfacemouna_autogen_timestamp_deps.dir
+C:/Users/mouna/OneDrive/2eme projet/interfacemouna/build/Desktop_Qt_6_7_3_llvm_mingw_64_bit-Debug/CMakeFiles/interfacemouna_autogen.dir
