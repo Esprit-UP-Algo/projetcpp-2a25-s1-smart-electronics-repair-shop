@@ -1,0 +1,33 @@
+# ninja log v6
+226	2205	7810115675177334	CMakeFiles/Gstock.dir/mainwindow.cpp.obj	9f9246bf5e38b634
+495	1721	7809561899812823	CMakeFiles/Gstock.dir/main.cpp.obj	8f5a656bfb3329de
+54	226	7810115673458515	Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+54	226	7810115673458515	Gstock_autogen/timestamp	d197c4705650f012
+54	226	7810115673458515	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/timestamp	d197c4705650f012
+54	226	7810115673458515	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+48	1084	7809564661467671	CMakeFiles/Gstock.dir/Gstock_autogen/mocs_compilation.cpp.obj	69ca36000f5821de
+2205	2364	7810115694966606	Gstock.exe	97c6b6e766de2cfe
+30	205	7810116649399928	Gstock_autogen/timestamp	d197c4705650f012
+30	205	7810116649399928	Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+30	205	7810116649399928	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/timestamp	d197c4705650f012
+30	205	7810116649399928	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+206	2145	7810116651162546	CMakeFiles/Gstock.dir/mainwindow.cpp.obj	9f9246bf5e38b634
+2145	2296	7810116670521373	Gstock.exe	97c6b6e766de2cfe
+48	214	7810116833348492	Gstock_autogen/timestamp	d197c4705650f012
+48	214	7810116833348492	Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+48	214	7810116833348492	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/timestamp	d197c4705650f012
+48	214	7810116833348492	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+215	2168	7810116835016363	CMakeFiles/Gstock.dir/mainwindow.cpp.obj	9f9246bf5e38b634
+2168	2318	7810116854527199	Gstock.exe	97c6b6e766de2cfe
+87	342	7810164203756623	Gstock_autogen/timestamp	d197c4705650f012
+87	342	7810164203756623	Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+87	342	7810164203756623	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/timestamp	d197c4705650f012
+87	342	7810164203756623	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+344	3348	7810164206325911	CMakeFiles/Gstock.dir/mainwindow.cpp.obj	9f9246bf5e38b634
+3349	3975	7810164236367151	Gstock.exe	97c6b6e766de2cfe
+68	236	7810169220238582	Gstock_autogen/timestamp	d197c4705650f012
+68	236	7810169220238582	Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+68	236	7810169220238582	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/timestamp	d197c4705650f012
+68	236	7810169220238582	C:/Users/Lenovo LOQ/Documents/Gstock/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/Gstock_autogen/mocs_compilation.cpp	d197c4705650f012
+236	2260	7810169221770033	CMakeFiles/Gstock.dir/mainwindow.cpp.obj	9f9246bf5e38b634
+2260	2415	7810169242157736	Gstock.exe	97c6b6e766de2cfe
