@@ -1,0 +1,27 @@
+# ninja log v6
+53	217	7814720286513867	SmartMarket_autogen/timestamp	90b4fbac1cc45534
+53	217	7814720286513867	SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+53	217	7814720286513867	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+53	217	7814720286513867	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/timestamp	90b4fbac1cc45534
+2794	2981	7814720313911603	SmartMarket.exe	ba5950ae6b44361c
+218	2794	7814720288153881	CMakeFiles/SmartMarket.dir/smartmarket.cpp.obj	987df9a8ae1e7de
+759	3101	7814711506325929	CMakeFiles/SmartMarket.dir/main.cpp.obj	db876b067ff801a5
+755	3109	7814711506285877	CMakeFiles/SmartMarket.dir/SmartMarket_autogen/mocs_compilation.cpp.obj	86583d81c9ea87f1
+45	203	7814720444741184	SmartMarket_autogen/timestamp	90b4fbac1cc45534
+45	203	7814720444741184	SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+45	203	7814720444741184	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/timestamp	90b4fbac1cc45534
+45	203	7814720444741184	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+204	3105	7814720446332726	CMakeFiles/SmartMarket.dir/smartmarket.cpp.obj	987df9a8ae1e7de
+3105	3294	7814720475339054	SmartMarket.exe	ba5950ae6b44361c
+54	243	7814721124503504	SmartMarket_autogen/timestamp	90b4fbac1cc45534
+54	243	7814721124503504	SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+54	243	7814721124503504	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/timestamp	90b4fbac1cc45534
+54	243	7814721124503504	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+244	3187	7814721126396682	CMakeFiles/SmartMarket.dir/smartmarket.cpp.obj	987df9a8ae1e7de
+3188	3481	7814721155831726	SmartMarket.exe	ba5950ae6b44361c
+59	342	7814736472560775	SmartMarket_autogen/timestamp	90b4fbac1cc45534
+59	342	7814736472560775	SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+59	342	7814736472560775	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/timestamp	90b4fbac1cc45534
+59	342	7814736472560775	C:/Users/elyes/Documents/SmartMarket/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/SmartMarket_autogen/mocs_compilation.cpp	90b4fbac1cc45534
+343	4811	7814736475434979	CMakeFiles/SmartMarket.dir/smartmarket.cpp.obj	987df9a8ae1e7de
+4811	5355	7814736520123823	SmartMarket.exe	ba5950ae6b44361c
