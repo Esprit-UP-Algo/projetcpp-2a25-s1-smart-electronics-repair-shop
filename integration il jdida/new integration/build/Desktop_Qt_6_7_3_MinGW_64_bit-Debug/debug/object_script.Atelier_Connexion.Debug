@@ -1,0 +1,11 @@
+debug/appareils.o
+debug/client.o
+debug/employes.o
+debug/main.o
+debug/mainwindow.o
+debug/connection.o
+debug/produit.o
+debug/smtp.o
+debug/vente.o
+debug/moc_mainwindow.o
+debug/moc_smtp.o
