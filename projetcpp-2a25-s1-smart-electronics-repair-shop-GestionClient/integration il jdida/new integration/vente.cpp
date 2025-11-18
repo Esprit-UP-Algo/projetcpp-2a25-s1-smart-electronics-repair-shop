@@ -278,7 +278,7 @@ bool vente::rechercherParId(QTableWidget *tableWidget, const QString &idvente)
 {
     QSqlQuery query;
 
-    query.prepare("SELECT * FROM VENTES ORDER BY CASE WHEN IDVENTE = :idvente THEN 0 ELSE 1 END");
+    query.prepare("SELECT * FROM VENTES WHERE IDVENTE = :idvente");
     query.bindValue(":idvente", idvente);
 
     if (!query.exec()) {
@@ -304,7 +304,7 @@ bool vente::rechercherParId(QTableWidget *tableWidget, const QString &idvente)
         qDebug() << "Aucune vente trouvée avec cet ID.";
         return false;
     } else {
-        qDebug() << "Ventes affichées (" << row << " lignes)";
+        qDebug() << "Vente trouvée et affichée.";
         return true;
     }
 }

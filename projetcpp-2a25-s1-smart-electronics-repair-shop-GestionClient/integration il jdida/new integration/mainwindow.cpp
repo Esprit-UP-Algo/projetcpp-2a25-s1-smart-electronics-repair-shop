@@ -14,6 +14,14 @@
 #include "employes.h"
 #include "produit.h"
 #include "appareils.h"
+#include <QPixmap>
+#include <QNetworkRequest>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
+#include <QBuffer>
+#include <QByteArray>
+#include <QFile>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -22,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     ui->setupUi(this);
+    ui->lineEdit_email->setPlaceholderText("Ecrire gmail du client");
+    connect(ui->pushButton_2, &QPushButton::clicked, this, &MainWindow::on_pushButton_2_clicked);
+
     regexCIN.setPattern("^[0-9]{8}$");
     regexNom.setPattern("^[A-Za-zÀ-ÿ\\s]+$");
     regexEmail.setPattern("^[\\w.-]+@[\\w.-]+\\.[A-Za-z]{2,6}$");
@@ -146,6 +157,7 @@ void MainWindow::on_ventes_clicked()
     ui->lineEdit_vente->setPlaceholderText("  Recherche  par Id Vente");
 }
 
+
 //client
 void MainWindow::on_annulerajout_client_clicked()
 {
@@ -204,7 +216,7 @@ void MainWindow::on_pushButton_ValiderClient_clicked()
         {
             c.ajouter();
             QMessageBox::information(this, "➕ Ajouté", "Client ajouté avec succès");
-            Smtp mail ;
+           /* Smtp mail ;
 
             mail.setUser("elyeskalai9@gmail.com");
             mail.setPassword("fmosngpfjgpkyuvy");
@@ -219,7 +231,7 @@ void MainWindow::on_pushButton_ValiderClient_clicked()
                                         "Numéro Téléphone : " + c.getnt() + "\n"
                                   "Anniversaire : " + c.getbirth() + "\n"
                                      "Adresse-Mail: " + c.getadresse()
-                );
+                );*/
 
             on_annulerajout_client_clicked();
         }
@@ -263,7 +275,7 @@ void MainWindow::on_pushButton_modifierClient_clicked()
         if (c.existe(c.getidclient()))   // only CIN check
         {
             c.modifier();
-            Smtp mail ;
+            /*Smtp mail ;
 
             mail.setUser("elyeskalai9@gmail.com");
             mail.setPassword("fmosngpfjgpkyuvy");
@@ -273,7 +285,7 @@ void MainWindow::on_pushButton_modifierClient_clicked()
                 c.getadresse(),
                 "Compte modifier",
                 "Bonjour " + c.getnom()+"   " +c.getprenom()+ ",\nVotre compte de smart electronique repair shop a été modifier.\nCIN : " + c.getidclient()+ ",.\nNumero Télephone : " + c.getnt()+ ",.\nAnniversaire : " + c.getbirth()+ ",.\nAdresse-Mail: " + c.getadresse());
-
+*/
             QMessageBox::information(this, "✔️ Modifié", "Client modifié avec succès");
             MainWindow::on_annulerajout_client_clicked();
         }
@@ -383,7 +395,7 @@ void MainWindow::on_pushButton_supprimer_client_clicked()
     {
 
 
-        Smtp mail ;
+       /* Smtp mail ;
 
         mail.setUser("elyeskalai9@gmail.com");
         mail.setPassword("fmosngpfjgpkyuvy");
@@ -393,7 +405,7 @@ void MainWindow::on_pushButton_supprimer_client_clicked()
             c2.getadresse(),  // client email
             "Compte supprimé",
             "Bonjour " + c.getnom() +c.getprenom()+ ",\nVotre compte de smart electronique repair shop a été suprimée." );
-
+*/
     }
     else
     {
@@ -776,7 +788,146 @@ void MainWindow::on_pushButton_33_clicked()
             QMessageBox::critical(this, tr("Erreur SQL"), tr("Échec de l'ajout de la vente !"));
         }
     }
+    ui->lineEdit_email->setPlaceholderText("Ecrire gmail du client");
 }
+QString MainWindow::generateVenteString()
+{
+    QString data;
+    int rows = ui->tableWidgetvente->rowCount();
+    int cols = ui->tableWidgetvente->columnCount();
+
+    // Ajouter les en-têtes
+    QStringList headers;
+    for(int c = 0; c < cols; c++) {
+        headers << ui->tableWidgetvente->horizontalHeaderItem(c)->text();
+    }
+    data = headers.join(" | ") + "\n";
+    data += "----------------------------------------\n";
+
+    // Ajouter les données
+    for(int r = 0; r < rows; r++){
+        for(int c = 0; c < cols; c++){
+            QTableWidgetItem *item = ui->tableWidgetvente->item(r, c);
+            data += (item ? item->text() : "") + (c == cols-1 ? "" : " | ");
+        }
+        data += "\n";
+    }
+    return data;
+}
+
+void MainWindow::genererQR(const QString &emailClient, const QString &subject, const QString &body)
+{
+    // 1️⃣ Générer les données de vente formatées pour le QR code
+    QString venteData = generateVenteString();
+
+    // 2️⃣ Limiter si trop long (API QR limite ~2000 chars)
+    if(venteData.length() > 1500) {
+        venteData = venteData.left(1500);
+        QMessageBox::warning(this, "Attention", "Les données ont été tronquées pour le QR code.");
+    }
+
+    // 3️⃣ Construire l'URL du QR code avec les données formatées
+    QString qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="
+                    + QUrl::toPercentEncoding(venteData);
+
+    // 4️⃣ Générer le tableau HTML pour l'email
+    QString htmlTable = "<table border='1' cellspacing='0' cellpadding='5' style='border-collapse: collapse; width: 100%;'>";
+    htmlTable += "<tr style='background-color: #4CAF50; color: white;'>";
+
+    int cols = ui->tableWidgetvente->columnCount();
+    int rows = ui->tableWidgetvente->rowCount();
+
+    for(int c=0; c<cols; c++) {
+        htmlTable += "<th style='padding: 12px; border: 1px solid #ddd; text-align: left;'>"
+                     + ui->tableWidgetvente->horizontalHeaderItem(c)->text() + "</th>";
+    }
+    htmlTable += "</tr>";
+
+    for(int r=0; r<rows; r++){
+        // Alterner les couleurs des lignes pour meilleure lisibilité
+        QString rowColor = (r % 2 == 0) ? "background-color: #f9f9f9;" : "background-color: white;";
+        htmlTable += "<tr style='" + rowColor + "'>";
+        for(int c=0; c<cols; c++){
+            QTableWidgetItem *item = ui->tableWidgetvente->item(r,c);
+            htmlTable += "<td style='padding: 10px; border: 1px solid #ddd;'>"
+                         + (item ? item->text() : "") + "</td>";
+        }
+        htmlTable += "</tr>";
+    }
+    htmlTable += "</table>";
+
+    // 5️⃣ Construire le message HTML avec instructions claires
+    QString htmlMessage =
+        "<div style='font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;'>"
+        "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 10px;'>"
+        "<h2 style='color: #2c3e50; text-align: center; margin-bottom: 20px;'>📋 Votre Facture de Vente</h2>"
+        "<p style='color: #555; font-size: 16px;'>Bonjour,</p>"
+        "<p style='color: #555; font-size: 16px;'>Voici le détail de votre achat :</p>"
+        "</div>"
+
+        "<div style='margin: 20px 0;'>"
+        + htmlTable +
+        "</div>"
+
+        "<div style='background-color: #e8f4fd; padding: 20px; border-radius: 10px; margin: 20px 0;'>"
+        "<h3 style='color: #1976d2;'>📱 QR Code de votre facture</h3>"
+        "<p style='color: #555;'>Scannez ce QR code avec votre smartphone pour accéder aux détails de votre vente :</p>"
+        "<div style='text-align: center; padding: 15px; background-color: white; border-radius: 10px; display: inline-block;'>"
+        "<img src='" + qrUrl + "' width='250' height='250' alt='QR Code de la vente' style='border: 2px solid #1976d2; border-radius: 10px;'/>"
+                  "</div>"
+                  "<p style='color: #666; font-size: 14px; margin-top: 10px;'><strong>Instructions :</strong> Ouvrez l'appareil photo de votre smartphone et pointez-la vers le QR code, ou utilisez une application de scan QR.</p>"
+                  "</div>"
+
+                  "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px;'>"
+                  "<p style='color: #777; font-size: 14px;'>Cordialement,<br/><strong>Votre application de vente</strong></p>"
+                  "</div>"
+                  "</div>";
+
+    // 6️⃣ Envoyer le mail avec la NOUVELLE classe Smtp
+    try {
+        // REMPLACEZ "votre_app_password" par le mot de passe d'application Gmail
+        Smtp smtp("elyeskalai9@gmail.com", "fmosngpfjgpkyuvy");
+        smtp.sendMail("elyeskalai9@gmail.com", emailClient, subject, htmlMessage);
+
+        QMessageBox::information(this, "Succès",
+                                 "✅ Email avec QR code envoyé avec succès à : " + emailClient + "\n\n"
+                                                                                                 "Le client pourra scanner le QR code pour voir le tableau des ventes.");
+    }
+    catch (...) {
+        QMessageBox::critical(this, "Erreur d'envoi",
+                              "Échec de l'envoi de l'email. Vérifiez :\n\n"
+                              "1. Votre connexion Internet\n"
+                              "2. Le mot de passe d'application Gmail\n"
+                              "3. Que l'email du client est valide\n"
+                              "4. Que la vérification à 2 facteurs est activée sur Gmail");
+    }
+}
+void MainWindow::on_pushButton_2_clicked()
+{
+    qDebug() << "Bouton cliqué !";
+
+    QString emailClient = ui->lineEdit_email->text().trimmed();
+    qDebug() << "Email saisi:" << emailClient;
+
+    if(emailClient.isEmpty()){
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer l'email du client !");
+        return;
+    }
+
+    // Vérifier qu'il y a des données dans le tableau
+    if(ui->tableWidgetvente->rowCount() == 0) {
+        QMessageBox::warning(this, "Erreur", "Le tableau de vente est vide !");
+        return;
+    }
+
+    qDebug() << "Appel de genererQR...";
+    QString mailSubject = "Facture de votre vente - QR Code inclus";
+    QString mailBody = "Voici votre facture de vente avec QR code";
+
+    genererQR(emailClient, mailSubject, mailBody);
+    qDebug() << "genererQR appelé";
+}
+
 void MainWindow::on_pushButton_3_clicked()
 {
     QString idvente = ui->lineEdit_supprimer_vente->text().trimmed();
@@ -1054,3 +1205,4 @@ void MainWindow::on_pushButton_26_clicked()
         QMessageBox::critical(this, tr("Erreur"), tr("Aucun produit trouvé !"));
     }
     }
+

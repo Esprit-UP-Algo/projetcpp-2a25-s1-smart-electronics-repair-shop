@@ -66,6 +66,8 @@ private slots:
                                       void annulerajout_5();
                                       void on_pushButton_25_clicked();
                                       void on_pushButton_26_clicked();
+                                      void on_pushButton_2_clicked();
+                                      QString generateVenteString();
 
 private:
     Ui::MainWindow *ui;
@@ -74,6 +76,7 @@ private:
     QRegularExpression regexEmail;
     QRegularExpression regexPhone;
     Client Etmp;
+    void genererQR(const QString &emailClient, const QString &subject, const QString &body);
 };
 
 #endif // MAINWINDOW_H

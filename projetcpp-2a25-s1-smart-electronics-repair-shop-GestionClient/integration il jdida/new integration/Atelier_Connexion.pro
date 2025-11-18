@@ -3,7 +3,7 @@
 # Project created by QtCreator 2018-10-26T21:45:23
 #
 #-------------------------------------------------
-
+include(qr/QZXing.pri)
 QT       += core gui sql
 QT += printsupport
 QT += network

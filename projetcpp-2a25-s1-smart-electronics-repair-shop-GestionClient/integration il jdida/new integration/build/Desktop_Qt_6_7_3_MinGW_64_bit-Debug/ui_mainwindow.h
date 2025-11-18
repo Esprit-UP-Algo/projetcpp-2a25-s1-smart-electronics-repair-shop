@@ -152,13 +152,13 @@ public:
     QLineEdit *lineEdit_vente;
     QPushButton *pushButton_35;
     QTableWidget *tableWidgetvente;
-    QPushButton *pushButton_36;
     QLineEdit *lineEdit_supprimer_vente;
     QPushButton *pushButton_3;
     QLabel *label_109;
-    QPushButton *pushButton_38;
     QLabel *image_4;
     QComboBox *comboBox_10;
+    QPushButton *pushButton_2;
+    QLineEdit *lineEdit_email;
     QPushButton *btnpage1vente;
     QLabel *label_110;
     QWidget *fournisseur;
@@ -2005,7 +2005,7 @@ public:
 "}"));
         lineEdit_vente = new QLineEdit(page_1);
         lineEdit_vente->setObjectName("lineEdit_vente");
-        lineEdit_vente->setGeometry(QRect(440, 90, 131, 31));
+        lineEdit_vente->setGeometry(QRect(440, 90, 181, 31));
         lineEdit_vente->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    width: 150px;\n"
 "    height: 150px;\n"
@@ -2017,7 +2017,7 @@ public:
 "}"));
         pushButton_35 = new QPushButton(page_1);
         pushButton_35->setObjectName("pushButton_35");
-        pushButton_35->setGeometry(QRect(780, 90, 121, 29));
+        pushButton_35->setGeometry(QRect(780, 100, 121, 29));
         pushButton_35->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #10b981;   /* normal state */\n"
 "    color: white;\n"
@@ -2074,25 +2074,9 @@ public:
 "    padding: 4px;\n"
 "    font-weight: bold;\n"
 "}"));
-        pushButton_36 = new QPushButton(page_1);
-        pushButton_36->setObjectName("pushButton_36");
-        pushButton_36->setGeometry(QRect(670, 500, 221, 31));
-        pushButton_36->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}"));
         lineEdit_supprimer_vente = new QLineEdit(page_1);
         lineEdit_supprimer_vente->setObjectName("lineEdit_supprimer_vente");
-        lineEdit_supprimer_vente->setGeometry(QRect(400, 490, 151, 41));
+        lineEdit_supprimer_vente->setGeometry(QRect(340, 490, 181, 41));
         lineEdit_supprimer_vente->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    width: 150px;\n"
 "    height: 150px;\n"
@@ -2104,7 +2088,7 @@ public:
 "}"));
         pushButton_3 = new QPushButton(page_1);
         pushButton_3->setObjectName("pushButton_3");
-        pushButton_3->setGeometry(QRect(570, 500, 51, 29));
+        pushButton_3->setGeometry(QRect(540, 500, 51, 29));
         pushButton_3->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "\n"
 "	background-color: rgb(220, 20, 60);\n"
@@ -2125,7 +2109,7 @@ public:
         pushButton_3->setIcon(icon);
         label_109 = new QLabel(page_1);
         label_109->setObjectName("label_109");
-        label_109->setGeometry(QRect(590, 150, 121, 41));
+        label_109->setGeometry(QRect(570, 150, 151, 41));
         label_109->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    border: 2px solid black;           /* bordure noire, 2px */\n"
 "    border-radius: 8px;\n"
@@ -2136,23 +2120,9 @@ public:
 "    subcontrol-position: top center;    /* titre centr\303\251 */\n"
 "    padding: 2px 10px;\n"
 "}"));
-        pushButton_38 = new QPushButton(page_1);
-        pushButton_38->setObjectName("pushButton_38");
-        pushButton_38->setGeometry(QRect(930, 500, 51, 31));
-        pushButton_38->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-""));
-        pushButton_38->setIcon(icon5);
         image_4 = new QLabel(page_1);
         image_4->setObjectName("image_4");
-        image_4->setGeometry(QRect(610, 40, 101, 91));
+        image_4->setGeometry(QRect(640, 40, 101, 91));
         image_4->setStyleSheet(QString::fromUtf8("background-color: rgb(209, 209, 209);\n"
 "   "));
         image_4->setPixmap(QPixmap(QString::fromUtf8("../Projet/images/photo.png")));
@@ -2189,6 +2159,30 @@ public:
 "    border-top: 6px solid black;       /* black arrow */\n"
 "}\n"
 ""));
+        pushButton_2 = new QPushButton(page_1);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setGeometry(QRect(820, 490, 231, 41));
+        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #10b981;   /* normal state */\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}"));
+        lineEdit_email = new QLineEdit(page_1);
+        lineEdit_email->setObjectName("lineEdit_email");
+        lineEdit_email->setGeometry(QRect(630, 490, 181, 41));
+        lineEdit_email->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    width: 150px;\n"
+"    height: 150px;\n"
+"    border: 3px solid rgb(245,245,245);\n"
+"    border-radius: 6px;\n"
+"    padding: 6px 12px;\n"
+"    color: rgb(0,0,0);\n"
+"    background-color: rgb(245,245,245); \n"
+"}"));
         stackedWidgetvente->addWidget(page_1);
         label_109->raise();
         groupBox_12->raise();
@@ -2196,12 +2190,12 @@ public:
         lineEdit_vente->raise();
         pushButton_35->raise();
         tableWidgetvente->raise();
-        pushButton_36->raise();
         lineEdit_supprimer_vente->raise();
         pushButton_3->raise();
-        pushButton_38->raise();
         image_4->raise();
         comboBox_10->raise();
+        pushButton_2->raise();
+        lineEdit_email->raise();
         btnpage1vente = new QPushButton(vente);
         btnpage1vente->setObjectName("btnpage1vente");
         btnpage1vente->setGeometry(QRect(10, 20, 101, 51));
@@ -3421,7 +3415,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName("menuBar");
-        menuBar->setGeometry(QRect(0, 0, 1513, 25));
+        menuBar->setGeometry(QRect(0, 0, 1513, 26));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName("mainToolBar");
@@ -3432,7 +3426,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidgetclient->setCurrentIndex(1);
+        stackedWidgetclient->setCurrentIndex(0);
         stackedWidgetstock->setCurrentIndex(0);
         stackedWidgetvente->setCurrentIndex(1);
         tabWidgetemployer->setCurrentIndex(0);
@@ -3581,14 +3575,14 @@ public:
         ___qtablewidgetitem20->setText(QCoreApplication::translate("MainWindow", "Montant Total", nullptr));
         QTableWidgetItem *___qtablewidgetitem21 = tableWidgetvente->horizontalHeaderItem(5);
         ___qtablewidgetitem21->setText(QCoreApplication::translate("MainWindow", "Mode De Paiment", nullptr));
-        pushButton_36->setText(QCoreApplication::translate("MainWindow", "Exportation format Excel", nullptr));
         lineEdit_supprimer_vente->setText(QString());
         pushButton_3->setText(QString());
-        label_109->setText(QCoreApplication::translate("MainWindow", "liste des ventes", nullptr));
-        pushButton_38->setText(QString());
+        label_109->setText(QCoreApplication::translate("MainWindow", "  liste des ventes", nullptr));
         image_4->setText(QString());
         comboBox_10->setItemText(0, QCoreApplication::translate("MainWindow", "date", nullptr));
 
+        pushButton_2->setText(QCoreApplication::translate("MainWindow", " envoyer au gmail du client", nullptr));
+        lineEdit_email->setText(QString());
         btnpage1vente->setText(QCoreApplication::translate("MainWindow", "vente", nullptr));
         label_110->setText(QCoreApplication::translate("MainWindow", "            Gestion Vente", nullptr));
         btnpage1four->setText(QCoreApplication::translate("MainWindow", "Appareils", nullptr));

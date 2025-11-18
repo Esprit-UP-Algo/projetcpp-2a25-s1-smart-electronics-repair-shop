@@ -1656,7 +1656,26 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../employes.h \
 		C:/Qt/6.7.3/mingw_64/include/QtCore/QDate \
 		../../produit.h \
-		../../appareils.h
+		../../appareils.h \
+		C:/Qt/6.7.3/mingw_64/include/QtGui/QPixmap \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/QNetworkRequest \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/qnetworkrequest.h \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QSharedDataPointer \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QUrl \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/QNetworkAccessManager \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/qnetworkaccessmanager.h \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/QSslConfiguration \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/qsslconfiguration.h \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QMetaType \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/QNetworkReply \
+		C:/Qt/6.7.3/mingw_64/include/QtNetwork/qnetworkreply.h \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QIODevice \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QBuffer \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/qbuffer.h \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QByteArray \
+		C:/Qt/6.7.3/mingw_64/include/QtCore/QFile
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\mainwindow.cpp
 
 debug/connection.o: ../../connection.cpp ../../connection.h \
