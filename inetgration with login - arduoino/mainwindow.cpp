@@ -551,11 +551,11 @@ void MainWindow::on_btnPage2client_clicked()
         else if (sexe.contains("femme"))
             femmeCount = count;
         else
-            noneCount = count; // handles ∅ or empty
+            noneCount = count;
     }
 
     int total = hommeCount + femmeCount + noneCount;
-    if (total == 0) total = 1; // avoid division by zero
+    if (total == 0) total = 1;
 
     int width = 500, height = 350;
     QPixmap pix(width, height);
@@ -564,34 +564,64 @@ void MainWindow::on_btnPage2client_clicked()
     QPainter p(&pix);
     p.setRenderHint(QPainter::Antialiasing);
 
-    // Define colors
     QColor colorHomme(41, 102, 148);
     QColor colorFemme("#10b981");
     QColor colorNone(220, 20, 60);
 
-    // Pie area
     QRectF rect(30, 40, 250, 250);
 
-    // Angles (Qt uses 1/16th of a degree)
     int angleHomme = int((360.0 * hommeCount / total) * 16);
     int angleFemme = int((360.0 * femmeCount / total) * 16);
     int angleNone  = int((360.0 * noneCount  / total) * 16);
 
-    // Draw slices
     int startAngle = 0;
 
+    // ===== Draw HOMME slice =====
     p.setBrush(colorHomme);
     p.drawPie(rect, startAngle, angleHomme);
+
+    double percH = (double)hommeCount / total * 100.0;
+    {
+        double midDeg = (startAngle + angleHomme / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double r = rect.width() * 0.33;
+        QPointF pos(rect.center().x() + r * cos(rad),
+                    rect.center().y() - r * sin(rad));
+        p.setPen(Qt::white);
+        p.drawText(pos, QString("%1%").arg(QString::number(percH, 'f', 1)));
+    }
     startAngle += angleHomme;
 
+    // ===== Draw FEMME slice =====
     p.setBrush(colorFemme);
     p.drawPie(rect, startAngle, angleFemme);
+
+    double percF = (double)femmeCount / total * 100.0;
+    {
+        double midDeg = (startAngle + angleFemme / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double r = rect.width() * 0.33;
+        QPointF pos(rect.center().x() + r * cos(rad),
+                    rect.center().y() - r * sin(rad));
+        p.drawText(pos, QString("%1%").arg(QString::number(percF, 'f', 1)));
+    }
     startAngle += angleFemme;
 
+    // ===== Draw NONE slice =====
     p.setBrush(colorNone);
     p.drawPie(rect, startAngle, angleNone);
 
-    // ===== Draw Legend =====
+    double percN = (double)noneCount / total * 100.0;
+    {
+        double midDeg = (startAngle + angleNone / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double r = rect.width() * 0.33;
+        QPointF pos(rect.center().x() + r * cos(rad),
+                    rect.center().y() - r * sin(rad));
+        p.drawText(pos, QString("%1%").arg(QString::number(percN, 'f', 1)));
+    }
+
+    // ===== Legend =====
     int legendX = 310;
     int legendY = 100;
     int blockSize = 25;
@@ -603,25 +633,22 @@ void MainWindow::on_btnPage2client_clicked()
     p.setFont(font);
     p.setPen(Qt::white);
 
-    // Homme block + label
     p.setBrush(colorHomme);
     p.drawRect(legendX, legendY, blockSize, blockSize);
     p.drawText(legendX + blockSize + 10, legendY + 20, QString("Hommes: %1").arg(hommeCount));
 
-    // Femme block + label
     p.setBrush(colorFemme);
     p.drawRect(legendX, legendY + spacing, blockSize, blockSize);
     p.drawText(legendX + blockSize + 10, legendY + spacing + 20, QString("Femmes: %1").arg(femmeCount));
 
-    // None block + label
     p.setBrush(colorNone);
     p.drawRect(legendX, legendY + spacing * 2, blockSize, blockSize);
     p.drawText(legendX + blockSize + 10, legendY + spacing * 2 + 20, QString("Sans Sexe : %1").arg(noneCount));
 
     p.end();
-
     ui->labelclientsexe->setPixmap(pix);
 }
+
 void MainWindow::on_pushButton_supprimer_client_clicked()
 {
     QString id = ui->lineEdit_supprimer_client->text();
