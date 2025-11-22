@@ -928,7 +928,7 @@ void MainWindow::on_pushButton_pdfclient_clicked()
                "Monsieur/Madame " + nom.toUpper() + " " + prenom + "<br>"
                                                 "Né(e) le : " + anniversaire + "<br>"
                                 "Passeport/CIN N° : " + cin + "<br>"
-                       "Nationalité : Marocaine"
+                       "Nationalité : Tunisienne"
                        "</p>";
 
     content += "<p style='text-indent:30px;'>"
@@ -991,7 +991,7 @@ void MainWindow::on_pushButton_pdfclient_clicked()
 
     // Signature section
     content += "<div style='margin-top:80px; text-align:right;'>"
-               "<p>Fait à <b>Casablanca, Maroc</b>, le " + currentDateStr + "</p>"
+               "<p>Fait à <b>Ariana, Tunis</b>, le " + currentDateStr + "</p>"
                                   "<br><br>"
                                   "<div style='border-top:2px solid #2c3e50; width:350px; margin-left:auto; padding-top:15px;'>"
                                   "<p style='font-weight:bold;'>Le Responsable Technique<br>"
