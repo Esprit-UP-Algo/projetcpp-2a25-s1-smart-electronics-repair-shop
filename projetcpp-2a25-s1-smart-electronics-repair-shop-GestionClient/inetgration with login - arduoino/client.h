@@ -18,6 +18,10 @@ private:
     QString sexe,birth,creationdate;
 
 public:
+    int supprimerDoublonsAmelioree();
+    int supprimerDoublonsSimple();
+    void afficherRapportDoublons();
+    void nettoyerDoublonsAvecRapport();
     Client(Ui::MainWindow *ui);
     Client(){};
     ~Client();

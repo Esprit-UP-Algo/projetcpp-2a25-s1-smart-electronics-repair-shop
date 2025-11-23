@@ -455,7 +455,7 @@ void MainWindow::on_pushButton_ValiderClient_clicked()
             bool ajoutReussi = c.ajouter(); // Check the return value
             if (ajoutReussi) {
             QMessageBox::information(this, "➕ Ajouté", "Client ajouté avec succès");
-           /*Smtp mail ;
+          /* Smtp mail ;
 
             mail.setUser("elyeskalai9@gmail.com");
             mail.setPassword("fmosngpfjgpkyuvy");
@@ -669,7 +669,18 @@ void MainWindow::statsexe()
     p.end();
     ui->labelclientsexe->setPixmap(pix);
 }
+void MainWindow::on_nettoyage_clicked(){
+    Client c;
+    // Pour voir les doublons sans supprimer
+    c.afficherRapportDoublons();
 
+    // Pour supprimer les doublons avec rapport détaillé
+    c.nettoyerDoublonsAvecRapport();
+
+    // Ou simplement supprimer
+     c.supprimerDoublonsAmelioree();
+    c.afficher(ui);
+}
 void MainWindow::statavis()
 {
     int excellent = 0;
@@ -1002,7 +1013,7 @@ void MainWindow::on_pushButton_pdfclient_clicked()
 
     // Footer with contact info
     content += "<div style='margin-top:50px; padding:20px; background-color:#f8f9fa; text-align:center; font-size:10pt;'>"
-               "<p><b>Smart Electronique</b> • 📞 +216 98 952 656 • 📧 contact@smartelectronique.ma • 🌐 www.smartelectronique.ma</p>"
+               "<p><b>Smart Electronique</b> • 📞 +216 98 952 656 • 📧 contact@smartelectronique.com • 🌐 www.smartelectronique.com</p>"
                "</div>";
 
     QTextDocument doc;

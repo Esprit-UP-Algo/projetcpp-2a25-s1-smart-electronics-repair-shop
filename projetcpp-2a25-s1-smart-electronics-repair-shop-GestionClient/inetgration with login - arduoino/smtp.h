@@ -15,6 +15,7 @@ public:
     void setUser(const QString &user);
     void setPassword(const QString &password);
     void sendMail2(const QString &from, const QString &to, const QString &subject, const QString &body);
+
     void sendMail(const QString &from,
                   const QString &to,
                   const QString &subject,

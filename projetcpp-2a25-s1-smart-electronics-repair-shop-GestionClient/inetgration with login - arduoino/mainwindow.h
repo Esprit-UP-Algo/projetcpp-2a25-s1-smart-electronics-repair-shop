@@ -64,6 +64,7 @@ private slots:
     void on_pushButton_31_clicked();
     void on_pushButton_2_clicked();
     void on_btnpage2vente_clicked();
+    void on_nettoyage_clicked();
 
 private:
 

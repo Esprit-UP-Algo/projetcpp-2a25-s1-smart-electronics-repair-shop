@@ -417,7 +417,7 @@ QPushButton[active=&quot;true&quot;] {
 </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_7">
        <widget class="QPushButton" name="pushButton_filtrer_3">
@@ -1243,7 +1243,7 @@ QLineEdit::placeholder {
        <widget class="QPushButton" name="pushButton_pdfclient">
         <property name="geometry">
          <rect>
-          <x>940</x>
+          <x>1010</x>
           <y>480</y>
           <width>41</width>
           <height>51</height>
@@ -1275,7 +1275,7 @@ QPushButton:hover {
        <widget class="QLabel" name="image_3">
         <property name="geometry">
          <rect>
-          <x>920</x>
+          <x>970</x>
           <y>20</y>
           <width>101</width>
           <height>91</height>
@@ -1295,7 +1295,7 @@ QPushButton:hover {
        <widget class="QLabel" name="label_3">
         <property name="geometry">
          <rect>
-          <x>740</x>
+          <x>800</x>
           <y>480</y>
           <width>191</width>
           <height>51</height>
@@ -1319,6 +1319,38 @@ QPushButton:hover {
          <string>Exporter format PDF</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="nettoyage">
+        <property name="geometry">
+         <rect>
+          <x>690</x>
+          <y>480</y>
+          <width>41</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #10b981;   /* normal state */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #059669;   /* darker on hover */
+}
+</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="QIcon::ThemeIcon::MediaPlaylistRepeat"/>
+        </property>
+       </widget>
        <zorder>label_31</zorder>
        <zorder>pushButton_filtrer_3</zorder>
        <zorder>pushButton_supprimer_client</zorder>
@@ -1331,6 +1363,7 @@ QPushButton:hover {
        <zorder>pushButton_pdfclient</zorder>
        <zorder>image_3</zorder>
        <zorder>label_3</zorder>
+       <zorder>nettoyage</zorder>
       </widget>
       <widget class="QWidget" name="page_8">
        <widget class="QLabel" name="labelclientsexe">

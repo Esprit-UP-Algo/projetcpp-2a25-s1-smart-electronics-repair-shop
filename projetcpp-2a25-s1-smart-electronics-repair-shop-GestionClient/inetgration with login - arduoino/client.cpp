@@ -197,4 +197,170 @@ bool Client::ajouter()
     return test;
 }
 
+/**
+ * @brief Version améliorée pour supprimer tous les doublons
+ * @return int Nombre de doublons supprimés
+ */
+int Client::supprimerDoublonsAmelioree()
+{
+    QSqlQuery query;
+    int doublonsSupprimes = 0;
 
+    // Démarrer une transaction
+    QSqlDatabase::database().transaction();
+
+    try {
+        // Méthode 1: Vérifier d'abord les doublons
+        query.prepare("SELECT NOM, PRENOM, NT, ADRESSE, COUNT(*) as count, MIN(CIN) as CIN_GARDE "
+                      "FROM CLIENTS "
+                      "GROUP BY NOM, PRENOM, NT, ADRESSE "
+                      "HAVING COUNT(*) > 1");
+
+        if (query.exec()) {
+            while (query.next()) {
+                QString nom = query.value("NOM").toString();
+                QString prenom = query.value("PRENOM").toString();
+                QString nt = query.value("NT").toString();
+                QString adresse = query.value("ADRESSE").toString();
+                QString cinAGarder = query.value("CIN_GARDE").toString();
+                int count = query.value("count").toInt();
+
+                qDebug() << "🔍 Doublon trouvé:" << nom << prenom << "| Count:" << count << "| Garder CIN:" << cinAGarder;
+
+                // Supprimer tous les doublons sauf celui qu'on garde
+                QSqlQuery deleteQuery;
+                deleteQuery.prepare("DELETE FROM CLIENTS "
+                                    "WHERE NOM = :nom AND PRENOM = :prenom AND NT = :nt AND ADRESSE = :adresse "
+                                    "AND CIN != :cin_garde");
+                deleteQuery.bindValue(":nom", nom);
+                deleteQuery.bindValue(":prenom", prenom);
+                deleteQuery.bindValue(":nt", nt);
+                deleteQuery.bindValue(":adresse", adresse);
+                deleteQuery.bindValue(":cin_garde", cinAGarder);
+
+                if (deleteQuery.exec()) {
+                    doublonsSupprimes += deleteQuery.numRowsAffected();
+                    qDebug() << "✅ Supprimé" << deleteQuery.numRowsAffected() << "doublon(s) pour" << nom << prenom;
+                }
+            }
+        }
+
+        // Valider la transaction
+        QSqlDatabase::database().commit();
+        qDebug() << "🎉 Nettoyage terminé. Doublons supprimés:" << doublonsSupprimes;
+
+    } catch (...) {
+        // Annuler en cas d'erreur
+        QSqlDatabase::database().rollback();
+        qDebug() << "❌ Erreur lors du nettoyage - Transaction annulée";
+        return 0;
+    }
+
+    return doublonsSupprimes;
+}
+
+/**
+ * @brief Affiche un rapport détaillé des doublons sans les supprimer
+ */
+void Client::afficherRapportDoublons()
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT NOM, PRENOM, NT, ADRESSE, COUNT(*) as count, "
+                  "GROUP_CONCAT(CIN) as cins "
+                  "FROM CLIENTS "
+                  "GROUP BY NOM, PRENOM, NT, ADRESSE "
+                  "HAVING COUNT(*) > 1 "
+                  "ORDER BY count DESC");
+
+    if (query.exec()) {
+        qDebug() << "📊 RAPPORT DES DOUBLONS:";
+        qDebug() << "========================";
+
+        int totalGroupes = 0;
+        int totalDoublons = 0;
+
+        while (query.next()) {
+            QString nom = query.value("NOM").toString();
+            QString prenom = query.value("PRENOM").toString();
+            QString nt = query.value("NT").toString();
+            QString adresse = query.value("ADRESSE").toString();
+            int count = query.value("count").toInt();
+            QString cins = query.value("cins").toString();
+
+            qDebug() << "👥 Groupe" << ++totalGroupes << ":";
+            qDebug() << "   Nom/Prénom:" << nom << prenom;
+            qDebug() << "   Téléphone:" << nt;
+            qDebug() << "   Adresse:" << adresse;
+            qDebug() << "   Nombre de doublons:" << count;
+            qDebug() << "   CINs:" << cins;
+            qDebug() << "   ---";
+
+            totalDoublons += (count - 1);
+        }
+
+        qDebug() << "📈 TOTAL:";
+        qDebug() << "   Groupes de doublons:" << totalGroupes;
+        qDebug() << "   Doublons à supprimer:" << totalDoublons;
+
+    } else {
+        qDebug() << "❌ Erreur rapport doublons:" << query.lastError().text();
+    }
+}
+
+/**
+ * @brief Version ultra-simple pour supprimer tous les doublons
+ * @return int Nombre de doublons supprimés
+ */
+int Client::supprimerDoublonsSimple()
+{
+    QSqlQuery query;
+
+    // Compter avant
+    query.prepare("SELECT COUNT(*) as total FROM CLIENTS");
+    query.exec();
+    query.next();
+    int totalAvant = query.value("total").toInt();
+
+    // Supprimer les doublons en gardant le plus petit CIN
+    query.prepare("DELETE FROM CLIENTS "
+                  "WHERE CIN NOT IN ("
+                  "   SELECT MIN(CIN) "
+                  "   FROM CLIENTS "
+                  "   GROUP BY NOM, PRENOM, NT, ADRESSE"
+                  ")");
+
+    if (query.exec()) {
+        int supprimes = query.numRowsAffected();
+
+        // Compter après
+        query.prepare("SELECT COUNT(*) as total FROM CLIENTS");
+        query.exec();
+        query.next();
+        int totalApres = query.value("total").toInt();
+
+        qDebug() << "✅ Doublons supprimés :" << supprimes;
+        qDebug() << "📊 Avant:" << totalAvant << "| Après:" << totalApres;
+
+        return supprimes;
+    } else {
+        qDebug() << "❌ Erreur suppression doublons :" << query.lastError().text();
+        return 0;
+    }
+}
+
+/**
+ * @brief Supprime les doublons et affiche un rapport détaillé
+ */
+void Client::nettoyerDoublonsAvecRapport()
+{
+    qDebug() << "🧹 Début du nettoyage des doublons...";
+
+    // D'abord afficher le rapport
+    afficherRapportDoublons();
+
+    // Ensuite supprimer
+    int doublonsSupprimes = supprimerDoublonsAmelioree();
+
+    qDebug() << "💾 Nettoyage terminé :" << doublonsSupprimes << "doublons supprimés";
+}
