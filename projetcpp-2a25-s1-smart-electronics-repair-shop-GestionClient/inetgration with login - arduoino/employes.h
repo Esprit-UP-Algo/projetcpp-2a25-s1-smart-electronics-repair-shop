@@ -61,6 +61,11 @@ public:
     bool supprimer(int id);
     void afficher(Ui::MainWindow *ui);
     bool rech(QString recherche, Ui::MainWindow *ui);
+    Employee getEmployeeById(int id);
+
+
 };
+
+
 
 #endif // EMPLOYES_H

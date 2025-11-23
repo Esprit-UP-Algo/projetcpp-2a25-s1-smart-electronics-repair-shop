@@ -14,10 +14,17 @@
 #include <QPixmap>
 #include <QBuffer>
 
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QTimer>
+
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-
+#include <QPixmap>
+#include <QPainter>
+#include <cmath>
 #include "smtp.h"
 #include "client.h"
 #include "vente.h"
@@ -93,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidgetvente->setSelectionBehavior(QAbstractItemView::SelectItems);
     ui->tableWidgetvente->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->tableWidgetvente->verticalHeader()->setVisible(false);
+
 }
 
 // New constructor with user info
@@ -172,6 +180,8 @@ MainWindow::MainWindow(const UserInfo &userInfo, QWidget *parent) :
     ui->tableWidgetvente->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->tableWidgetvente->verticalHeader()->setVisible(false);
 }
+
+
 
 // Rest of your existing MainWindow implementation remains the same...
 MainWindow::~MainWindow()
@@ -822,7 +832,6 @@ void MainWindow::on_pushButton_recherche_3_clicked()
 
 }
 
-
 void MainWindow::on_pushButton_filtrer_3_clicked()
 {
     QString trier = ui->comboBox_3->currentText();
@@ -1049,8 +1058,17 @@ void MainWindow::on_pushButton_4_clicked()
     // Validate required fields first
     if (ui->lineEdit_40->text().isEmpty() ||
         ui->lineEdit_42->text().isEmpty() ||
-        ui->lineEdit_41->text().isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs obligatoires!");
+        ui->lineEdit_41->text().isEmpty() ||
+        ui->lineEdit_39->text().isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs obligatoires (ID, Nom, Prénom, Téléphone)!");
+        return;
+    }
+
+    // Validate ID is a number
+    bool ok;
+    int id = ui->lineEdit_40->text().toInt(&ok);
+    if (!ok) {
+        QMessageBox::warning(this, "Erreur", "L'ID doit être un nombre!");
         return;
     }
 
@@ -1064,7 +1082,7 @@ void MainWindow::on_pushButton_4_clicked()
         // Clear the form
         on_annulerajout_4_clicked();
     } else {
-        QMessageBox::critical(this, "Erreur", "❌ Impossible d'ajouter l'employé !");
+        QMessageBox::critical(this, "Erreur", "❌ Impossible d'ajouter l'employé !\nVérifiez que l'ID n'existe pas déjà.");
     }
 }
 
@@ -1089,8 +1107,6 @@ void MainWindow::on_pushButton_8_clicked()
 
 void MainWindow::on_tableWidgetemployer_cellClicked(int row)
 {
-
-
     QString id = ui->tableWidgetemployer->item(row, 0)->text();
     QString nom = ui->tableWidgetemployer->item(row, 1)->text();
     QString prenom = ui->tableWidgetemployer->item(row, 2)->text();
@@ -1111,18 +1127,25 @@ void MainWindow::on_tableWidgetemployer_cellClicked(int row)
     ui->spinBox->setValue(absence.toInt());
     ui->lineEdit_43->setText(poste);
 
-    QDate date = QDate::fromString(date_naissance, "dd/MM/yyyy");
+    // Try multiple date formats
+    QDate date = QDate::fromString(date_naissance, "yyyy-MM-dd"); // Try database format first
+    if (!date.isValid()) {
+        date = QDate::fromString(date_naissance, "dd/MM/yyyy"); // Try display format
+    }
     if (date.isValid()) {
         ui->dateEdit->setDate(date);
+    } else {
+        ui->dateEdit->setDate(QDate::currentDate()); // Default to current date if parsing fails
+        qDebug() << "Failed to parse date:" << date_naissance;
     }
 
     ui->radioButton_3->setAutoExclusive(false);
     ui->radioButton_4->setAutoExclusive(false);
 
-    if (sexe == "Homme" || sexe == "Male") {
+    if (sexe == "Homme" || sexe == "Male" || sexe.toLower().contains("homme")) {
         ui->radioButton_3->setChecked(true);
         ui->radioButton_4->setChecked(false);
-    } else if (sexe == "Femme" || sexe == "Female") {
+    } else if (sexe == "Femme" || sexe == "Female" || sexe.toLower().contains("femme")) {
         ui->radioButton_3->setChecked(false);
         ui->radioButton_4->setChecked(true);
     } else {
@@ -1136,6 +1159,12 @@ void MainWindow::on_tableWidgetemployer_cellClicked(int row)
 
 void MainWindow::on_pushButton_6_clicked()
 {
+    // Validate required fields
+    if (ui->lineEdit_40->text().isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un employé à modifier!");
+        return;
+    }
+
     // Create employee object from current UI data
     Employee emp(ui);
     bool test = emp.modifier();
@@ -1145,7 +1174,7 @@ void MainWindow::on_pushButton_6_clicked()
         // Refresh the table to show updated data
         emp.afficher(ui);
         // Clear the form
-        MainWindow::on_annulerajout_4_clicked();
+        on_annulerajout_4_clicked();
     } else {
         QMessageBox::critical(this, "Erreur", "❌ Impossible de modifier l'employé !");
     }
@@ -1986,4 +2015,267 @@ void MainWindow::on_btnpage2vente_clicked()
 
     ui->labelStatVentes->setPixmap(pix);
     ui->labelStatVentes->setScaledContents(true);
+}
+void MainWindow::genererAttestationTravail(int idEmploye)
+{
+    Employee emp;
+    Employee employe = emp.getEmployeeById(idEmploye);
+
+    if (employe.getid() == 0) {
+        QMessageBox::warning(this, "Erreur", "Employé non trouvé !");
+        return;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Enregistrer l'attestation de travail",
+        employe.getnom() + "_" + employe.getprenom() + "_Attestation_Travail.pdf",
+        "PDF Files (*.pdf)"
+        );
+
+    if (fileName.isEmpty()) return;
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setPageSize(QPageSize::A4);
+
+    // HTML très simple qui fonctionne
+    QString content;
+    content += "<html><body>";
+    content += "<h1>ATTESTATION DE TRAVAIL</h1>";
+    content += "<h2>SMART ELECTRONIQUE</h2>";
+    content += "<hr>";
+
+    QString currentDate = QDate::currentDate().toString("dd/MM/yyyy");
+    content += "<p><strong>Ariana, le " + currentDate + "</strong></p>";
+    content += "<p>Référence: ATT-" + QString::number(idEmploye) + "-" + QDate::currentDate().toString("yyyyMMdd") + "</p>";
+    content += "<hr>";
+
+    content += "<h3>OBJET : Attestation de travail</h3>";
+    content += "<p>À qui de droit,</p>";
+    content += "<p>Nous soussigné(e)s, <strong>Smart Electronique</strong>, société spécialisée dans la réparation électronique,</p>";
+    content += "<p>certifions que <strong>Monsieur/Madame " + employe.getprenom().toUpper() + " " + employe.getnom().toUpper() + "</strong>,</p>";
+    content += "<p>né(e) le <strong>" + employe.getdatenaissance() + "</strong>,</p>";
+    content += "<p>demeurant au <strong>" + employe.getadresse() + "</strong>,</p>";
+    content += "<p>est régulièrement employé(e) par notre société en qualité de :</p>";
+
+    content += "<h2><center>" + employe.getposte().toUpper() + "</center></h2>";
+
+    content += "<p>Cette attestation est délivrée à l'intéressé(e) pour faire valoir ce que de droit.</p>";
+    content += "<p><em>L'intéressé(e) travaille actuellement dans notre établissement et y occupe les fonctions susmentionnées.</em></p>";
+
+    // Signatures
+    content += "<br><br><br><br>";
+    content += "<table width='100%'>";
+    content += "<tr>";
+    content += "<td width='45%' align='center'>_________________________<br>Le Responsable des RH<br>Cachet et signature</td>";
+    content += "<td width='10%'></td>";
+    content += "<td width='45%' align='center'>_________________________<br>Le Directeur Général<br>Cachet et signature</td>";
+    content += "</tr>";
+    content += "</table>";
+
+    content += "<br><br><br>";
+    content += "<hr>";
+    content += "<p align='center'><small>SMART ELECTRONIQUE - Centre de Réparation Électronique Agréé<br>";
+    content += "Siège Social: Ariana, Tunisie - Tél: +216 98 952 656<br>";
+    content += "Email: contact@smartelectronique.com - R.C. : XXXXXX - I.F. : XXXXXX</small></p>";
+
+    content += "</body></html>";
+
+    QTextDocument doc;
+    doc.setHtml(content);
+    doc.print(&printer);
+
+    QMessageBox::information(this, "PDF Export", "✅ Attestation professionnelle générée avec succès !");
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    QList<QTableWidgetItem*> selectedItems = ui->tableWidgetemployer->selectedItems();
+
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un employé dans le tableau !");
+        return;
+    }
+
+    int row = selectedItems.first()->row();
+    int idEmploye = ui->tableWidgetemployer->item(row, 0)->text().toInt();
+
+    QString nom = ui->tableWidgetemployer->item(row, 1)->text();
+    QString prenom = ui->tableWidgetemployer->item(row, 2)->text();
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Générer l'attestation",
+                                  QString("Voulez-vous générer une attestation de travail pour :\n%1 %2 ?")
+                                      .arg(prenom).arg(nom),
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        genererAttestationTravail(idEmploye);
+    }
+}
+//stat emp
+void MainWindow::statempage()
+{
+    // ==========================
+    // CALCUL AGE GROUPS FROM DB
+    // ==========================
+    int age18_30 = 0;
+    int age30_45 = 0;
+    int age45plus = 0;
+
+    QSqlQuery q("SELECT DATE_NAISSANCE FROM EMPLOYES");
+    while (q.next()) {
+
+        QDate birth = q.value(0).toDate();
+        if (!birth.isValid()) continue;
+
+        int age = birth.daysTo(QDate::currentDate()) / 365;
+
+        if (age >= 18 && age <= 30) age18_30++;
+        else if (age > 30 && age <= 45) age30_45++;
+        else if (age > 45) age45plus++;
+    }
+
+    int total = age18_30 + age30_45 + age45plus;
+    if (total == 0) total = 1;
+
+    // ==========================
+    // ANIMATION 0 → 100
+    // ==========================
+    double k = animationProgressemp / 100.0;
+
+    if (animationProgressemp >= 100) {
+        animTimeremp->stop();
+    } else {
+        animationProgressemp += 2;
+    }
+
+    // ==========================
+    // DRAW AREA
+    // ==========================
+    int width = 500, height = 350;
+    QPixmap pix(width, height);
+    pix.fill(Qt::transparent);
+
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+
+    QColor c18_30("#3b82f6");
+    QColor c30_45("#10b981");
+    QColor c45plus("#ef4444");
+
+    QRectF rect(30, 40, 250, 250);
+
+    // ==========================
+    // CONVERT TO ANGLES WITH ANIMATION
+    // ==========================
+    int a18_30 = int((360.0 * age18_30 / total) * 16 * k);
+    int a30_45 = int((360.0 * age30_45 / total) * 16 * k);
+    int a45plus = int((360.0 * age45plus / total) * 16 * k);
+
+    int start = 0;
+
+    // ====================================================
+    // DRAW SECTION + PERCENTAGE INSIDE THE CIRCLE (18–30)
+    // ====================================================
+    p.setBrush(c18_30);
+    p.drawPie(rect, start, a18_30);
+
+    double perc18_30 = (double)age18_30 / total * 100.0;
+    if (k >= 1.0 && age18_30 > 0) {
+        double midDeg = (start + a18_30 / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double R = rect.width() * 0.33;
+
+        QPointF pos(rect.center().x() + R * cos(rad),
+                    rect.center().y() - R * sin(rad));
+
+        p.setPen(Qt::white);
+        p.drawText(pos, QString("%1%").arg(QString::number(perc18_30, 'f', 1)));
+    }
+    start += a18_30;
+
+    // ====================================================
+    // DRAW SECTION + PERCENTAGE (30–45)
+    // ====================================================
+    p.setBrush(c30_45);
+    p.drawPie(rect, start, a30_45);
+
+    double perc30_45 = (double)age30_45 / total * 100.0;
+    if (k >= 1.0 && age30_45 > 0) {
+        double midDeg = (start + a30_45 / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double R = rect.width() * 0.33;
+
+        QPointF pos(rect.center().x() + R * cos(rad),
+                    rect.center().y() - R * sin(rad));
+
+        p.setPen(Qt::white);
+        p.drawText(pos, QString("%1%").arg(QString::number(perc30_45, 'f', 1)));
+    }
+    start += a30_45;
+
+    // ====================================================
+    // DRAW SECTION + PERCENTAGE (+45)
+    // ====================================================
+    p.setBrush(c45plus);
+    p.drawPie(rect, start, a45plus);
+
+    double perc45 = (double)age45plus / total * 100.0;
+    if (k >= 1.0 && age45plus > 0) {
+        double midDeg = (start + a45plus / 2.0) / 16.0;
+        double rad = midDeg * M_PI / 180.0;
+        double R = rect.width() * 0.33;
+
+        QPointF pos(rect.center().x() + R * cos(rad),
+                    rect.center().y() - R * sin(rad));
+
+        p.setPen(Qt::white);
+        p.drawText(pos, QString("%1%").arg(QString::number(perc45, 'f', 1)));
+    }
+
+    // ==========================
+    // LEGEND
+    // ==========================
+    int X = 310;
+    int Y = 100;
+    int size = 25;
+    int space = 40;
+
+    QFont font;
+    font.setBold(true);
+    font.setPointSize(14);
+    p.setFont(font);
+    p.setPen(Qt::white);
+
+    p.setBrush(c18_30);
+    p.drawRect(X, Y, size, size);
+    p.drawText(X + size + 10, Y + 20,
+               QString("18–30 ans : %1").arg(age18_30));
+
+    p.setBrush(c30_45);
+    p.drawRect(X, Y + space, size, size);
+    p.drawText(X + size + 10, Y + space + 20,
+               QString("30–45 ans : %1").arg(age30_45));
+
+    p.setBrush(c45plus);
+    p.drawRect(X, Y + space * 2, size, size);
+    p.drawText(X + size + 10, Y + space * 2 + 20,
+               QString("+45 ans : %1").arg(age45plus));
+
+    p.end();
+    ui->empstat->setPixmap(pix);
+}
+
+
+void MainWindow::on_agestatemp_clicked()
+{
+
+    animationProgressemp = 0;
+    animTimeremp = new QTimer(this);
+    connect(animTimeremp, &QTimer::timeout, this, &MainWindow::statempage);
+    animTimeremp->start(20);
+    MainWindow::statempage();
 }

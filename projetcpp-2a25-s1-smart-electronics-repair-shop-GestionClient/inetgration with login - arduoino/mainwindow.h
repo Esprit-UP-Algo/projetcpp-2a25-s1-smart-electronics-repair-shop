@@ -65,7 +65,11 @@ private slots:
     void on_pushButton_2_clicked();
     void on_btnpage2vente_clicked();
     void on_nettoyage_clicked();
-
+    void on_pushButton_9_clicked();
+    void genererAttestationTravail(int idEmploye);
+    void on_tabWidgetemployer_currentChanged(int index);
+    void updateEmployeeStatistics();
+    void on_agestatemp_clicked();
 private:
 
     Ui::MainWindow *ui;
@@ -89,5 +93,12 @@ private:
     QTimer *animTimer;
     int avisAnim = 0;
     QTimer *avisTimer = nullptr;
+    void statempage();
+    int animationProgressemp = 0;
+    QTimer *animTimeremp;
+
+
+
+
 };
 #endif // MAINWINDOW_H

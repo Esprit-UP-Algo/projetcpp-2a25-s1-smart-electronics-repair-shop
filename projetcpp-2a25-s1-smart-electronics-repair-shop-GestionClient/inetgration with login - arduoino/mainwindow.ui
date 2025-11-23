@@ -4313,7 +4313,7 @@ background-color: rgb(41, 102, 148);}
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>30</y>
+        <y>0</y>
         <width>1061</width>
         <height>631</height>
        </rect>
@@ -4370,7 +4370,7 @@ QTabBar::tab[active=&quot;true&quot;] {
 </string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -4697,44 +4697,6 @@ QLineEdit::placeholder {
            </property>
           </widget>
          </item>
-         <item row="9" column="2">
-          <widget class="QDateEdit" name="dateEdit">
-           <property name="styleSheet">
-            <string notr="true">QDateEdit {
-    background-color: rgb(255, 255, 255);
-    color: #1f2937;              /* typed text color */
-    border: 2px solid #3b82f6;   /* blue border */
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
-}
-
-QDateEdit:focus {
-    border: 2px solid #2563EB;        /* bleu quand focus */
-    background-color: #F3F4F6;        /* léger gris */
-}
-
-/* Bouton flèche */
-QDateEdit::drop-down {
-    border: none;
-    width: 20px;
-    background-color: #2563EB;        /* bouton bleu */
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-QDateEdit::down-arrow {
-    image: url(:/icons/arrow-down.png);  /* icône optionnelle */
-    width: 12px;
-    height: 12px;
-}
-</string>
-           </property>
-           <property name="displayFormat">
-            <string>yyyy-MM-dd</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="2">
           <widget class="QLineEdit" name="lineEdit_39">
            <property name="styleSheet">
@@ -4887,6 +4849,44 @@ color: rgb(255, 255, 255);background-color: rgb(41, 102, 148);</string>
            </property>
           </widget>
          </item>
+         <item row="9" column="1" colspan="2">
+          <widget class="QDateEdit" name="dateEdit">
+           <property name="styleSheet">
+            <string notr="true">QDateEdit {
+    background-color: rgb(255, 255, 255);
+    color: #1f2937;              /* typed text color */
+    border: 2px solid #3b82f6;   /* blue border */
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+QDateEdit:focus {
+    border: 2px solid #2563EB;        /* bleu quand focus */
+    background-color: #F3F4F6;        /* léger gris */
+}
+
+/* Bouton flèche */
+QDateEdit::drop-down {
+    border: none;
+    width: 20px;
+    background-color: #2563EB;        /* bouton bleu */
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+QDateEdit::down-arrow {
+    image: url(:/icons/arrow-down.png);  /* icône optionnelle */
+    width: 12px;
+    height: 12px;
+}
+</string>
+           </property>
+           <property name="displayFormat">
+            <string>yyyy-MM-dd</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
        <widget class="QPushButton" name="pushButton_8">
@@ -4951,8 +4951,8 @@ QLineEdit::placeholder {
        <widget class="QPushButton" name="pushButton_9">
         <property name="geometry">
          <rect>
-          <x>920</x>
-          <y>540</y>
+          <x>900</x>
+          <y>530</y>
           <width>61</width>
           <height>41</height>
          </rect>
@@ -5316,6 +5316,32 @@ background-color: rgb(41, 102, 148);}</string>
        <attribute name="title">
         <string>Statistique</string>
        </attribute>
+       <widget class="QPushButton" name="agestatemp">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>100</y>
+          <width>90</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>age</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="empstat">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>140</y>
+          <width>491</width>
+          <height>361</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
