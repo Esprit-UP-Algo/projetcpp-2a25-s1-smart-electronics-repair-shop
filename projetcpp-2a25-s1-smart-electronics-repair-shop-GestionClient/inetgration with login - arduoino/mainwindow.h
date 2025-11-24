@@ -67,9 +67,12 @@ private slots:
     void on_nettoyage_clicked();
     void on_pushButton_9_clicked();
     void genererAttestationTravail(int idEmploye);
-    void on_tabWidgetemployer_currentChanged(int index);
-    void updateEmployeeStatistics();
     void on_agestatemp_clicked();
+    void on_pushButtonLogout_clicked();
+    void on_pushButton_5_clicked();
+
+protected :
+    void closeEvent(QCloseEvent *event) override;
 private:
 
     Ui::MainWindow *ui;

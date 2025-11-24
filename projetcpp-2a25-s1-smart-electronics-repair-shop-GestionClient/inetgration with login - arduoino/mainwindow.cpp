@@ -2279,3 +2279,39 @@ void MainWindow::on_agestatemp_clicked()
     animTimeremp->start(20);
     MainWindow::statempage();
 }
+
+// ADD CLOSE EVENT HANDLER
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Fermer l'application",
+                                  "Voulez-vous vraiment fermer l'application?",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    qDebug() << "Logout button clicked!";
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Déconnexion",
+                                  "Êtes-vous sûr de vouloir vous déconnecter?",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        qDebug() << "User confirmed logout";
+
+        // Show logout confirmation
+
+
+        // Close the main window - this will trigger the application to return to login
+        this->close();
+    }
+}
+

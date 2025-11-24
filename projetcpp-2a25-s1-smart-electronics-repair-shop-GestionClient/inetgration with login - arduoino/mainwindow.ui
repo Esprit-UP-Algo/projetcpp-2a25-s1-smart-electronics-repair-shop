@@ -4370,7 +4370,7 @@ QTabBar::tab[active=&quot;true&quot;] {
 </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -5345,6 +5345,39 @@ background-color: rgb(41, 102, 148);}</string>
       </widget>
      </widget>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+
+	background-color: rgb(220, 20, 60);
+	
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+      /* darker on hover */
+	background-color: rgb(140, 0, 0);
+}
+
+</string>
+    </property>
+    <property name="text">
+     <string>LOGOUT</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

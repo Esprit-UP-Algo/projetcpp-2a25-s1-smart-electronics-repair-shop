@@ -19,25 +19,34 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // Show login dialog
-    LoginDialog loginDialog;
-    if (loginDialog.exec() == QDialog::Accepted) {
-        if (loginDialog.isAuthenticated()) {
-            // Create main window with user info
-            UserInfo user = loginDialog.getCurrentUser();
-            MainWindow w(user);
-            w.show();
+    // Main application loop for login/logout
+    while (true) {
+        // Show login dialog
+        LoginDialog loginDialog;
+        if (loginDialog.exec() == QDialog::Accepted) {
+            if (loginDialog.isAuthenticated()) {
+                // Create main window with user info
+                UserInfo user = loginDialog.getCurrentUser();
+                MainWindow w(user);
+                w.show();
 
-            QMessageBox::information(nullptr, "Connexion réussie",
-                                     QString("✅ Bienvenue %1 %2!\nRôle: %3")
-                                         .arg(user.prenom)
-                                         .arg(user.nom)
-                                         .arg(user.poste), QMessageBox::Ok);
+                QMessageBox::information(nullptr, "Connexion réussie",
+                                         QString("✅ Bienvenue %1 %2!\nRôle: %3")
+                                             .arg(user.prenom)
+                                             .arg(user.nom)
+                                             .arg(user.poste));
 
-            return a.exec();
+                // Run the application - when main window closes, we return here
+                a.exec();
+
+                // When we get here, the main window has been closed (logout)
+                // The loop will continue and show login dialog again
+            }
+        } else {
+            // User cancelled login - exit application completely
+            break;
         }
     }
 
-    // If login failed or dialog was cancelled
     return 0;
 }
