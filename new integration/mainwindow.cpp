@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QPainter>
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QTextDocument>
@@ -952,4 +952,209 @@ void MainWindow::on_pushButton_26_clicked()
     if (!p.rechercherParReference(ui->tableWidgetfour, ref)) {
         QMessageBox::critical(this, tr("Erreur"), tr("Aucun produit trouvé !"));
     }
+    }
+    void MainWindow::on_pushButton_28_clicked(){
+        QString fileName = QFileDialog::getSaveFileName(
+            this,
+            "Save PDF",
+            "Statistiques_Appareils.pdf",
+            "PDF Files (*.pdf)"
+            );
+        if (fileName.isEmpty()) return;
+
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(fileName);
+        printer.setPageSize(QPageSize(QPageSize::A4));
+
+        // ---- 1. Calculate statistics from table (same as your diagram function) ----
+        QMap<QString, int> stats;
+
+        int rows = ui->tableWidgetfour->rowCount();
+        for (int i = 0; i < rows; i++)
+        {
+            QTableWidgetItem *itemEtat = ui->tableWidgetfour->item(i, 4);
+
+            if (!itemEtat) continue;
+
+            QString etat = itemEtat->text().trimmed();
+            if (etat.isEmpty()) continue;
+
+            stats[etat]++;
+        }
+
+        if (stats.isEmpty()) {
+            QMessageBox::warning(this, "Error", "No data found in the table!");
+            return;
+        }
+
+        // ---- 2. Generate PDF content with the actual statistics ----
+        QString content;
+        content += "<html><head>";
+        content += "<style>"
+                   "body { font-family: Arial, sans-serif; margin: 40px; }"
+                   "h1 { text-align: center; color: #296694; }"
+                   "table { width: 100%; border-collapse: collapse; margin: 20px 0; }"
+                   "th { background-color: #296694; color: white; padding: 12px; text-align: left; }"
+                   "td { padding: 10px; border-bottom: 1px solid #ddd; }"
+                   "tr:nth-child(even) { background-color: #f9f9f9; }"
+                   ".total { font-weight: bold; background-color: #e6f2ff; }"
+                   "</style>";
+        content += "</head><body>";
+
+        content += "<h1>📊 Statistiques des États des Appareils</h1>";
+        content += "<p style='text-align: center; color: #666;'>Date: " + QDate::currentDate().toString("dd/MM/yyyy") + "</p>";
+
+        // Statistics table
+        content += "<table>";
+        content += "<tr><th>État</th><th>Nombre d'Appareils</th><th>Pourcentage</th></tr>";
+
+        int total = 0;
+        for (auto value : stats.values()) {
+            total += value;
+        }
+
+        for (auto it = stats.begin(); it != stats.end(); ++it) {
+            QString etat = it.key();
+            int count = it.value();
+            double percentage = (double(count) / total) * 100;
+
+            content += "<tr>";
+            content += "<td>" + etat + "</td>";
+            content += "<td>" + QString::number(count) + "</td>";
+            content += "<td>" + QString::number(percentage, 'f', 1) + "%</td>";
+            content += "</tr>";
+        }
+
+        // Total row
+        content += "<tr class='total'>";
+        content += "<td><strong>Total</strong></td>";
+        content += "<td><strong>" + QString::number(total) + "</strong></td>";
+        content += "<td><strong>100%</strong></td>";
+        content += "</tr>";
+
+        content += "</table>";
+
+        // Summary section
+        content += "<div style='margin-top: 30px;'>";
+        content += "<h3>Résumé des Statistiques</h3>";
+        content += "<ul>";
+        content += "<li>Nombre total d'appareils: <strong>" + QString::number(total) + "</strong></li>";
+        content += "<li>Nombre d'états différents: <strong>" + QString::number(stats.size()) + "</strong></li>";
+
+        // Find most common state
+        QString mostCommonState;
+        int maxCount = 0;
+        for (auto it = stats.begin(); it != stats.end(); ++it) {
+            if (it.value() > maxCount) {
+                maxCount = it.value();
+                mostCommonState = it.key();
+            }
+        }
+        content += "<li>État le plus fréquent: <strong>" + mostCommonState + "</strong> (" + QString::number(maxCount) + " appareils)</li>";
+
+        content += "</ul>";
+        content += "</div>";
+
+        content += "</body></html>";
+
+        // ---- 3. Create and print PDF ----
+        QTextDocument doc;
+        doc.setHtml(content);
+        doc.print(&printer);
+
+        QMessageBox::information(this, "PDF Export", "✅ Les statistiques ont été exportées en PDF avec succès !");
+    }
+    void MainWindow::on_btnpage2four_clicked()
+    {
+        qDebug() << "DEBUG: START Dynamic Diagram";
+
+        // ---- 1. Read data from table dynamically ----
+        QMap<QString, int> stats;
+
+        int rows = ui->tableWidgetfour->rowCount();
+        for (int i = 0; i < rows; i++)
+        {
+            QTableWidgetItem *itemEtat = ui->tableWidgetfour->item(i, 4);
+
+            if (!itemEtat) continue;
+
+            QString etat = itemEtat->text().trimmed();
+            if (etat.isEmpty()) continue;
+
+            stats[etat]++;
+        }
+
+        if (stats.isEmpty()) {
+            qDebug() << "DEBUG: No data found.";
+            return;
+        }
+
+        // ---- 2. Prepare pixmap ----
+        int width = 500, height = 350;
+        QPixmap pix(width, height);
+        pix.fill(Qt::white);
+
+        QPainter p(&pix);
+        p.setRenderHint(QPainter::Antialiasing);
+
+        // ---- Title ----
+        p.setPen(Qt::black);
+        p.setFont(QFont("Arial", 14, QFont::Bold));
+        p.drawText(0, 10, width, 30, Qt::AlignCenter, "Statistiques des États");
+
+        // ---- 3. Bar chart parameters ----
+        int margin = 50;
+        int barWidth = 40;
+        int spacing = 40;
+
+        int maxBarHeight = height - 120;
+        int maxValue = 1;
+        for (auto value : stats.values())
+            if (value > maxValue) maxValue = value;
+
+        // ---- 4. Draw bars ----
+        int x = margin;
+
+        p.setFont(QFont("Arial", 9));
+
+        for (auto it = stats.begin(); it != stats.end(); ++it)
+        {
+            QString label = it.key();
+            int value = it.value();
+
+            int barHeight = int((double(value) / maxValue) * maxBarHeight);
+
+            // Random color for each state
+            QColor color(rand() % 200, rand() % 200, rand() % 200);
+            p.setBrush(color);
+            p.setPen(Qt::NoPen);
+
+            // Draw bar
+            p.drawRect(x, height - 60 - barHeight, barWidth, barHeight);
+
+            // Draw numeric value above bar
+            p.setPen(Qt::black);
+            p.drawText(x, height - 75 - barHeight, barWidth, 20,
+                       Qt::AlignCenter, QString::number(value));
+
+            // Draw label
+            p.drawText(x - 10, height - 50, barWidth + 20, 40,
+                       Qt::AlignCenter, label);
+
+            x += barWidth + spacing;
+        }
+
+        p.end();
+
+        // ---- 5. Show in label ----
+        ui->statapp->setPixmap(pix.scaled(
+            ui->statapp->size(),
+            Qt::KeepAspectRatio,
+            Qt::SmoothTransformation
+            ));
+
+        ui->statapp->setScaledContents(true);
+
+        qDebug() << "DEBUG: Diagram completed.";
     }

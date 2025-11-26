@@ -52,7 +52,7 @@ private slots:
     void on_pushButton_33_clicked();
     void on_pushButton_3_clicked();
 
-
+void on_pushButton_28_clicked();
     void on_annulerajout_vente_2_clicked();
     void on_tableWidgetstock_cellClicked(int row);
     void on_pushButton_22_clicked();
@@ -67,6 +67,8 @@ private slots:
                                       void annulerajout_5();
                                       void on_pushButton_25_clicked();
                                       void on_pushButton_26_clicked();
+                                      void on_btnpage2four_clicked();
+
 
 private:
     Ui::MainWindow *ui;

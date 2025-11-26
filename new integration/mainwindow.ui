@@ -177,7 +177,7 @@ QPushButton:hover {
 </string>
      </property>
      <property name="text">
-      <string>Gestion Des Appareils</string>
+      <string>Gestion Des Fournisseurs</string>
      </property>
     </widget>
     <widget class="QPushButton" name="ventes">
@@ -4184,7 +4184,21 @@ QDateEdit QAbstractItemView {
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_15"/>
+      <widget class="QWidget" name="page_15">
+       <widget class="QLabel" name="statapp">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>140</y>
+          <width>521</width>
+          <height>321</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
      </widget>
      <widget class="QPushButton" name="btnpage2four">
       <property name="geometry">
