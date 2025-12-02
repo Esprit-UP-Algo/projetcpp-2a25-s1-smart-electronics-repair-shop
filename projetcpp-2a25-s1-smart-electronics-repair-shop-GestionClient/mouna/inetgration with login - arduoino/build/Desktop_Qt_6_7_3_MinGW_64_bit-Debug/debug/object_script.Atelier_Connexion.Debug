@@ -1,0 +1,16 @@
+debug/appareils.o
+debug/arduino.o
+debug/client.o
+debug/contenir.o
+debug/employes.o
+debug/logindialog.o
+debug/main.o
+debug/mainwindow.o
+debug/connection.o
+debug/produit.o
+debug/smtp.o
+debug/vente.o
+debug/moc_contenir.o
+debug/moc_logindialog.o
+debug/moc_mainwindow.o
+debug/moc_smtp.o
