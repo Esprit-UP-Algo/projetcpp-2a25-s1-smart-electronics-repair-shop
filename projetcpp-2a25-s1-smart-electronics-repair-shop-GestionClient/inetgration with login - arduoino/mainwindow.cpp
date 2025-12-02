@@ -32,6 +32,7 @@
 #include "produit.h"
 #include "appareils.h"
 #include "logindialog.h"
+#include "contenir.h"
 
 // Original constructor (for backward compatibility)
 MainWindow::MainWindow(QWidget *parent) :
@@ -1447,8 +1448,51 @@ void MainWindow::on_pushButton_35_clicked()
     {QMessageBox::information(this, "tri", "no tri.");}
 
 }
+
+#include "contenir.h"
+#include "vente.h"
+
 void MainWindow::on_pushButton_33_clicked()
 {
+    // Get the sale ID from lineEdit_45
+    QString saleIdText = ui->lineEdit_45->text().trimmed();
+
+    if (saleIdText.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez entrer un ID vente !");
+        return;
+    }
+
+    // Check if sale ID is valid
+    bool ok;
+    int saleId = saleIdText.toInt(&ok);
+    if (!ok || saleId <= 0) {
+        QMessageBox::warning(this, "Erreur", "ID vente invalide ! Doit être un nombre positif.");
+        return;
+    }
+
+    // Check if there are staged products for this sale
+    bool hasStagedProducts = Contenir::hasStagedVente(saleId);
+    int productCount = 0;
+    QString productList = "";
+
+    if (hasStagedProducts) {
+        // DEBUG: Show what's in the staged vente
+        qDebug() << "=== Checking staged products for vente #" << saleId << " ===";
+
+        StagedVente stagedVente = Contenir::getStagedVente(saleId);
+        productCount = stagedVente.items.count();
+
+        // Build product list for display
+        for (int i = 0; i < stagedVente.items.count(); ++i) {
+            QString ref = stagedVente.items[i].first;
+            int qty = stagedVente.items[i].second;
+            productList += QString("  • %1 x %2\n").arg(ref).arg(qty);
+            qDebug() << "  Product:" << ref << "x" << qty;
+        }
+        qDebug() << "=== Total products:" << productCount << " ===";
+    }
+
+    // Create vente object
     vente v(ui);
 
     // Récupérer les données depuis l'interface utilisateur
@@ -1468,24 +1512,173 @@ void MainWindow::on_pushButton_33_clicked()
         return;
     }
 
+    // Validate required fields
+    if (v.getidvente().isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "ID vente requis !");
+        return;
+    }
+
+    if (v.getmontanttotal() <= 0) {
+        QMessageBox::warning(this, "Erreur", "Montant total doit être > 0 !");
+        return;
+    }
+
+    if (v.getmodedepaiment().isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Mode de paiement requis !");
+        return;
+    }
+
     // Vérifier si la vente existe déjà
     if (v.existe(v.getidvente()))
     {
         QMessageBox::critical(this, tr("Erreur"), tr("Cette vente existe déjà !"));
+        return;  // Return here, don't proceed
     }
-    else
-    {
-        // Ajouter la vente
-        if (v.ajouter())
-        {
-            QMessageBox::information(this, tr("Succès"), tr("Vente ajoutée avec succès !"));
-            v.afficher(ui); // Actualiser le tableau
-        }
-        else
-        {
-            QMessageBox::critical(this, tr("Erreur SQL"), tr("Échec de l'ajout de la vente !"));
-        }
+
+    // Build confirmation message
+    QString confirmMessage = QString("Confirmer la création de la vente ?\n\n"
+                                     "DÉTAILS DE LA VENTE:\n"
+                                     "• ID Vente: %1\n"
+                                     "• Date: %2\n"
+                                     "• Montant total: %3 DT\n"
+                                     "• TVA: %4%\n"
+                                     "• Remise: %5%\n"
+                                     "• Mode de paiement: %6\n")
+                                 .arg(v.getidvente())
+                                 .arg(v.getdatedevente())
+                                 .arg(v.getmontanttotal())
+                                 .arg(v.gettauxtva())
+                                 .arg(v.getremise())
+                                 .arg(v.getmodedepaiment());
+
+    if (hasStagedProducts) {
+        confirmMessage += QString("\n\nPRODUITS À AJOUTER (%1):\n%2")
+                              .arg(productCount)
+                              .arg(productList);
+    } else {
+        confirmMessage += "\n\n⚠️ ATTENTION: Aucun produit n'a été ajouté à cette vente.";
+        confirmMessage += "\nLa vente sera créée sans produits dans le détail.";
     }
+
+    QMessageBox::StandardButton confirm = QMessageBox::question(
+        this,
+        "Confirmation finale",
+        confirmMessage,
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel
+        );
+
+    if (confirm != QMessageBox::Yes) {
+        qDebug() << "User cancelled vente creation for ID:" << saleId;
+        return;  // User cancelled
+    }
+
+    // FIRST: Save the sale to VENTES table
+    qDebug() << "Attempting to save vente #" << saleId << "to VENTES table...";
+
+    if (!v.ajouter()) {
+        QMessageBox::critical(this, tr("Erreur SQL"),
+                              tr("Échec de l'ajout de la vente dans la table VENTES !"));
+        return;
+    }
+
+    qDebug() << "Vente #" << saleId << "successfully saved to VENTES table";
+
+    // SECOND: If there are staged products, commit them to CONTENIR table
+    if (hasStagedProducts) {
+        qDebug() << "Now attempting to commit " << productCount
+                 << " products to CONTENIR table for vente #" << saleId;
+
+        // Test database connection before committing
+        QSqlDatabase db = QSqlDatabase::database();
+        if (!db.isOpen()) {
+            qDebug() << "Database not open! Attempting to reopen...";
+            if (!db.open()) {
+                QMessageBox::critical(this, "Erreur Base de données",
+                                      "Impossible de se connecter à la base de données !");
+                return;
+            }
+        }
+
+        // Try to commit products
+        bool commitSuccess = Contenir::commitVenteToDatabase(saleId);
+
+        if (commitSuccess) {
+            // Successfully saved products to CONTENIR
+            Contenir::removeStagedVente(saleId);  // Clear from memory
+
+            QMessageBox::information(this,
+                                     "✅ Succès complet",
+                                     QString("Vente créée avec succès !\n\n"
+                                             "VENTE:\n"
+                                             "• ID: %1\n"
+                                             "• Montant: %2 DT\n"
+                                             "• Paiement: %3\n\n"
+                                             "PRODUITS:\n"
+                                             "• %4 produit(s) ajouté(s) au détail")
+                                         .arg(saleId)
+                                         .arg(v.getmontanttotal())
+                                         .arg(v.getmodedepaiment())
+                                         .arg(productCount));
+
+            qDebug() << "✅ Vente #" << saleId << "completely saved: VENTES + CONTENIR";
+
+        } else {
+            // Failed to save products - but sale was saved
+            qDebug() << "❌ Failed to save products to CONTENIR table";
+
+            // Ask user what to do
+            QMessageBox::StandardButton choice = QMessageBox::question(
+                this,
+                "Produits non sauvegardés",
+                QString("La vente #%1 a été créée MAIS les produits n'ont pas pu être ajoutés.\n\n"
+                        "Que voulez-vous faire ?")
+                    .arg(saleId),
+                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel,
+                QMessageBox::Retry
+                );
+
+            if (choice == QMessageBox::Retry) {
+                // Keep products in memory for retry
+                QMessageBox::information(this, "Réessayer plus tard",
+                                         "Les produits restent en mémoire.\n"
+                                         "Vous pouvez réessayer ultérieurement.");
+            } else if (choice == QMessageBox::Ignore) {
+                // Remove products from memory
+                Contenir::removeStagedVente(saleId);
+                QMessageBox::information(this, "Produits supprimés",
+                                         "Les produits ont été supprimés de la mémoire.\n"
+                                         "La vente existe sans produits dans le détail.");
+            } else {
+                // Cancel - rollback the vente? (You might want to delete the vente)
+                // This is optional - depends on your requirements
+            }
+        }
+    } else {
+        // No products to save, just sale info
+        QMessageBox::information(this,
+                                 "✅ Vente créée",
+                                 QString("Vente #%1 créée avec succès !\n\n"
+                                         "Note: Aucun produit ajouté au détail.\n"
+                                         "Vous pouvez ajouter des produits plus tard.")
+                                     .arg(saleId));
+
+        qDebug() << "✅ Vente #" << saleId << "saved without products";
+    }
+
+    // Clear the form (optional)
+    ui->lineEdit_45->clear();
+    ui->lineEdit_46->clear();
+    ui->lineEdit_47->clear();
+    ui->lineEdit_49->clear();
+    ui->radioButton_5->setAutoExclusive(false);
+    ui->radioButton_5->setChecked(false);
+    ui->radioButton_6->setChecked(false);
+    ui->radioButton_5->setAutoExclusive(true);
+
+    // Actualiser le tableau des ventes
+    v.afficher(ui);
+
+    qDebug() << "=== on_pushButton_33_clicked() completed ===";
 }
 void MainWindow::on_pushButton_3_clicked()
 {
@@ -2314,4 +2507,107 @@ void MainWindow::on_pushButton_5_clicked()
         this->close();
     }
 }
+void MainWindow::on_pushButton_7_clicked()
+{
+    // Get the sale ID from your line edit
+    int idVente = ui->lineEdit_45->text().toInt(); // Replace with your actual line edit name
 
+    // Validate the ID
+    if (idVente <= 0) {
+        QMessageBox::warning(this, "ID Vente Invalide", "Veuillez entrer un ID de vente valide.");
+        return;
+    }
+
+    // Pass the sale ID to the constructor
+    Contenir popup(idVente, this);
+    popup.exec();
+}
+
+
+#include <QInputDialog>
+
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    // Get vente ID from user using input dialog
+    bool ok;
+    int venteId = QInputDialog::getInt(this,
+                                       "Commit Vente to Database",
+                                       "Enter Vente ID to commit:",
+                                       1,    // Default value
+                                       1,    // Minimum value
+                                       1000, // Maximum value
+                                       1,    // Step
+                                       &ok);
+
+    if (!ok) {
+        // User cancelled
+        qDebug() << "User cancelled vente commit";
+        return;
+    }
+
+    qDebug() << "Attempting to commit vente #" << venteId << "to database";
+
+    // Check if the vente exists in memory
+    if (!Contenir::hasStagedVente(venteId)) {
+        QMessageBox::information(this, "Vente Not Found",
+                                 QString("Vente #%1 is not staged in memory.\n\n"
+                                         "Please stage it first using the 'Contenir' dialog "
+                                         "before committing to database.")
+                                     .arg(venteId));
+        return;
+    }
+
+    // Get vente details for confirmation
+    StagedVente stagedVente = Contenir::getStagedVente(venteId);
+    int itemCount = stagedVente.items.count();
+
+    // Show confirmation dialog with details
+    QMessageBox::StandardButton confirm = QMessageBox::question(
+        this,
+        "Commit to Database",
+        QString("Are you sure you want to commit vente #%1 to the database?\n\n"
+                "Details:\n"
+                "• Vente ID: %1\n"
+                "• Products: %2\n"
+                "• Staged at: %3\n\n"
+                "This action will:\n"
+                "1. Save to CONTENIR table\n"
+                "2. Update product stocks\n"
+                "3. Remove from memory")
+            .arg(venteId)
+            .arg(itemCount)
+            .arg(stagedVente.timestamp.toString("yyyy-MM-dd hh:mm:ss")),
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (confirm != QMessageBox::Yes) {
+        qDebug() << "User cancelled commit for vente #" << venteId;
+        return;
+    }
+
+    // Try to commit to database and clear from memory
+    if (Contenir::commitAndClearVente(venteId)) {
+        QMessageBox::information(this,
+                                 "Success",
+                                 QString("Vente #%1 successfully saved to database!\n\n"
+                                         "• %2 product(s) saved to CONTENIR table\n"
+                                         "• Product stocks updated\n"
+                                         "• Removed from memory")
+                                     .arg(venteId)
+                                     .arg(itemCount));
+
+        qDebug() << "Vente #" << venteId << "commited to database and removed from memory";
+
+    } else {
+        QMessageBox::critical(this,
+                              "Error",
+                              QString("Error saving vente #%1 to database.\n\n"
+                                      "Possible reasons:\n"
+                                      "• Database connection issue\n"
+                                      "• Insufficient stock\n"
+                                      "• Database constraint violation\n\n"
+                                      "The vente remains staged in memory.")
+                                  .arg(venteId));
+    }
+}

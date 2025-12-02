@@ -2582,7 +2582,7 @@ QPushButton[active=&quot;true&quot;] {
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_16">
        <widget class="QLabel" name="labelStatVentes">
@@ -2857,7 +2857,7 @@ color: rgb(255, 255, 255)</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>290</y>
+           <y>330</y>
            <width>141</width>
            <height>20</height>
           </rect>
@@ -2874,7 +2874,7 @@ color: rgb(255, 255, 255)</string>
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>290</y>
+           <y>330</y>
            <width>110</width>
            <height>31</height>
           </rect>
@@ -2907,7 +2907,7 @@ QRadioButton::indicator:checked {
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>320</y>
+           <y>360</y>
            <width>161</width>
            <height>24</height>
           </rect>
@@ -3027,6 +3027,36 @@ QPushButton:hover {
           <iconset theme="QIcon::ThemeIcon::EditClear"/>
          </property>
         </widget>
+        <widget class="QLabel" name="label_111">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>290</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color:rgb(41, 102, 148);
+color: rgb(255, 255, 255)</string>
+         </property>
+         <property name="text">
+          <string>ajouter produit</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>290</y>
+           <width>90</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test</string>
+         </property>
+        </widget>
         <zorder>label_102</zorder>
         <zorder>label_101</zorder>
         <zorder>lineEdit_45</zorder>
@@ -3044,6 +3074,8 @@ QPushButton:hover {
         <zorder>pushButton_33</zorder>
         <zorder>modifier_vente</zorder>
         <zorder>annulerajout_vente_2</zorder>
+        <zorder>label_111</zorder>
+        <zorder>pushButton_7</zorder>
        </widget>
        <widget class="QPushButton" name="pushButton_34">
         <property name="geometry">
@@ -3128,7 +3160,7 @@ QPushButton:hover {
          <rect>
           <x>360</x>
           <y>180</y>
-          <width>591</width>
+          <width>631</width>
           <height>301</height>
          </rect>
         </property>
@@ -3187,6 +3219,11 @@ QHeaderView::section {
         <column>
          <property name="text">
           <string>Mode De Paiment</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>refproduit</string>
          </property>
         </column>
        </widget>

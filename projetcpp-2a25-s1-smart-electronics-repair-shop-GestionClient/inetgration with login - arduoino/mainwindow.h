@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include "arduino.h"
 #include "client.h"
+#include "contenir.h"
 #include <QMainWindow>
 #include "logindialog.h"
 namespace Ui {
@@ -70,6 +71,8 @@ private slots:
     void on_agestatemp_clicked();
     void on_pushButtonLogout_clicked();
     void on_pushButton_5_clicked();
+    void on_pushButton_7_clicked();
+    void on_pushButton_10_clicked();
 
 protected :
     void closeEvent(QCloseEvent *event) override;

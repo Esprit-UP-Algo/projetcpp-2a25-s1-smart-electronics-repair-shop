@@ -83,11 +83,8 @@ public:
     QPushButton *pushButton_pdfclient;
     QLabel *image_3;
     QLabel *label_3;
-    QPushButton *nettoyage;
     QWidget *page_8;
-    QLabel *labelclientsexe;
     QLabel *label_40;
-    QLabel *labelclientavis;
     QLabel *label_41;
     QWidget *stock;
     QStackedWidget *stackedWidgetstock;
@@ -121,6 +118,7 @@ public:
     QLabel *image_7;
     QLabel *label_75;
     QPushButton *pushButton_22;
+    QPushButton *pushButton_2;
     QWidget *page_13;
     QGroupBox *groupBox_10;
     QTextEdit *textEdit_3;
@@ -131,7 +129,7 @@ public:
     QPushButton *btnpage2vente;
     QStackedWidget *stackedWidgetvente;
     QWidget *page_16;
-    QLabel *labelStatVentes;
+    QPushButton *pushButton_32;
     QWidget *page_1;
     QGroupBox *groupBox_12;
     QLabel *label_101;
@@ -155,13 +153,13 @@ public:
     QLineEdit *lineEdit_vente;
     QPushButton *pushButton_35;
     QTableWidget *tableWidgetvente;
+    QPushButton *pushButton_36;
     QLineEdit *lineEdit_supprimer_vente;
     QPushButton *pushButton_3;
     QLabel *label_109;
+    QPushButton *pushButton_38;
     QLabel *image_4;
     QComboBox *comboBox_10;
-    QLineEdit *lineEdit_email;
-    QPushButton *pushButton_2;
     QPushButton *btnpage1vente;
     QLabel *label_110;
     QWidget *fournisseur;
@@ -172,7 +170,10 @@ public:
     QLabel *label_79;
     QLineEdit *lineEdit_28;
     QLineEdit *lineEdit_29;
+    QLineEdit *lineEdit_30;
+    QLineEdit *lineEdit_31;
     QLineEdit *lineEdit_32;
+    QLineEdit *lineEdit_33;
     QTableWidget *tableWidgetfour;
     QComboBox *comboBox_9;
     QLabel *label_80;
@@ -189,11 +190,16 @@ public:
     QLabel *label_83;
     QLabel *label_84;
     QLabel *label_85;
+    QLabel *label_86;
+    QLabel *label_87;
+    QRadioButton *radioButton;
+    QRadioButton *radioButton_2;
+    QLabel *label_88;
+    QLineEdit *lineEdit_36;
+    QLabel *label_89;
+    QLineEdit *lineEdit_37;
     QLabel *image_8;
     QPushButton *annulerajout_5;
-    QPushButton *pushButton_37;
-    QDateEdit *dateEdit_5;
-    QDateEdit *dateEdit_6;
     QWidget *page_15;
     QPushButton *btnpage2four;
     QLabel *label_90;
@@ -202,32 +208,30 @@ public:
     QWidget *tab_2;
     QGroupBox *groupBox_11;
     QGridLayout *gridLayout;
-    QLineEdit *lineEdit_40;
-    QLabel *label_91;
-    QLabel *label_97;
     QRadioButton *radioButton_4;
-    QLabel *label_93;
-    QLineEdit *lineEdit_43;
-    QLabel *label_95;
-    QPushButton *pushButton_6;
-    QSpinBox *spinBox;
     QLabel *label_96;
-    QLineEdit *lineEdit_44;
-    QRadioButton *radioButton_3;
-    QPushButton *pushButton_4;
-    QLabel *label_92;
     QLabel *label_47;
-    QLineEdit *lineEdit_41;
-    QLineEdit *lineEdit_39;
-    QLabel *label_45;
-    QPushButton *annulerajout_4;
     QLineEdit *lineEdit_42;
-    QLabel *label_46;
-    QLineEdit *lineEdit_38;
-    QLabel *label_94;
-    QLineEdit *lineEdit;
-    QLabel *label_105;
+    QLineEdit *lineEdit_44;
     QDateEdit *dateEdit;
+    QSpinBox *spinBox;
+    QLabel *label_45;
+    QLineEdit *lineEdit_38;
+    QLineEdit *lineEdit_39;
+    QLabel *label_93;
+    QLineEdit *lineEdit_41;
+    QLabel *label_94;
+    QRadioButton *radioButton_3;
+    QLabel *label_91;
+    QLabel *label_46;
+    QLabel *label_92;
+    QLabel *label_97;
+    QLabel *label_95;
+    QLineEdit *lineEdit_43;
+    QLineEdit *lineEdit_40;
+    QPushButton *annulerajout_4;
+    QPushButton *pushButton_6;
+    QPushButton *pushButton_4;
     QPushButton *pushButton_8;
     QLineEdit *lineEdit_empsupp;
     QPushButton *pushButton_9;
@@ -241,9 +245,6 @@ public:
     QLabel *label_100;
     QLabel *image_9;
     QWidget *tab_4;
-    QPushButton *agestatemp;
-    QLabel *empstat;
-    QPushButton *pushButton_5;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -877,7 +878,6 @@ public:
         datedenaissance_3 = new QDateEdit(groupBox_4);
         datedenaissance_3->setObjectName("datedenaissance_3");
         datedenaissance_3->setGeometry(QRect(130, 348, 161, 31));
-        datedenaissance_3->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
         datedenaissance_3->setStyleSheet(QString::fromUtf8("QDateEdit {\n"
 "    background-color: rgb(255, 255, 255);   /* white background */\n"
 "    color: rgb(0, 0, 0);                   /* black text */\n"
@@ -892,7 +892,6 @@ public:
 "    background-color: white;\n"
 "}\n"
 ""));
-        datedenaissance_3->setCurrentSection(QDateTimeEdit::Section::YearSection);
         annulerajout_client = new QPushButton(groupBox_4);
         annulerajout_client->setObjectName("annulerajout_client");
         annulerajout_client->setGeometry(QRect(210, 430, 71, 61));
@@ -993,7 +992,7 @@ public:
 ""));
         pushButton_pdfclient = new QPushButton(page_7);
         pushButton_pdfclient->setObjectName("pushButton_pdfclient");
-        pushButton_pdfclient->setGeometry(QRect(1010, 480, 41, 51));
+        pushButton_pdfclient->setGeometry(QRect(940, 480, 41, 51));
         pushButton_pdfclient->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #10b981;   /* normal state */\n"
 "    color: white;\n"
@@ -1012,13 +1011,13 @@ public:
         pushButton_pdfclient->setIcon(icon5);
         image_3 = new QLabel(page_7);
         image_3->setObjectName("image_3");
-        image_3->setGeometry(QRect(970, 20, 101, 91));
+        image_3->setGeometry(QRect(920, 20, 101, 91));
         image_3->setStyleSheet(QString::fromUtf8("background-color: rgb(209, 209, 209);\n"
 "   "));
         image_3->setPixmap(QPixmap(QString::fromUtf8("../Projet/images/photo.png")));
         label_3 = new QLabel(page_7);
         label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(800, 480, 191, 51));
+        label_3->setGeometry(QRect(740, 480, 191, 51));
         label_3->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "    background-color: #10b981;   /* normal state */\n"
 "    color: white;\n"
@@ -1031,25 +1030,6 @@ public:
 "\n"
 "\n"
 ""));
-        nettoyage = new QPushButton(page_7);
-        nettoyage->setObjectName("nettoyage");
-        nettoyage->setGeometry(QRect(690, 480, 41, 41));
-        nettoyage->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}\n"
-""));
-        QIcon icon6(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaylistRepeat));
-        nettoyage->setIcon(icon6);
         stackedWidgetclient->addWidget(page_7);
         label_31->raise();
         pushButton_filtrer_3->raise();
@@ -1063,27 +1043,20 @@ public:
         pushButton_pdfclient->raise();
         image_3->raise();
         label_3->raise();
-        nettoyage->raise();
         page_8 = new QWidget();
         page_8->setObjectName("page_8");
-        labelclientsexe = new QLabel(page_8);
-        labelclientsexe->setObjectName("labelclientsexe");
-        labelclientsexe->setGeometry(QRect(20, 70, 491, 411));
         label_40 = new QLabel(page_8);
         label_40->setObjectName("label_40");
-        label_40->setGeometry(QRect(140, 430, 131, 41));
+        label_40->setGeometry(QRect(90, 380, 131, 41));
         label_40->setStyleSheet(QString::fromUtf8("QLabel{\n"
 " border: 2px solid black;   /* blue border */\n"
 "    border-radius: 8px;\n"
 " font-weight: bold;\n"
 "    font-size: 14px;\n"
 "background-color: rgb(41, 102, 148);}"));
-        labelclientavis = new QLabel(page_8);
-        labelclientavis->setObjectName("labelclientavis");
-        labelclientavis->setGeometry(QRect(550, 60, 491, 411));
         label_41 = new QLabel(page_8);
         label_41->setObjectName("label_41");
-        label_41->setGeometry(QRect(720, 430, 151, 41));
+        label_41->setGeometry(QRect(790, 380, 131, 41));
         label_41->setStyleSheet(QString::fromUtf8("QLabel{\n"
 " border: 2px solid black;   /* blue border */\n"
 "    border-radius: 8px;\n"
@@ -1644,6 +1617,9 @@ public:
 "	background-color: rgb(140, 0, 0);\n"
 "}"));
         pushButton_22->setIcon(icon);
+        pushButton_2 = new QPushButton(page_12);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setGeometry(QRect(910, 480, 91, 41));
         stackedWidgetstock->addWidget(page_12);
         label_75->raise();
         comboBox_8->raise();
@@ -1655,6 +1631,7 @@ public:
         groupBox_9->raise();
         image_7->raise();
         pushButton_22->raise();
+        pushButton_2->raise();
         page_13 = new QWidget();
         page_13->setObjectName("page_13");
         groupBox_10 = new QGroupBox(page_13);
@@ -1763,7 +1740,7 @@ public:
 ""));
         stackedWidgetvente = new QStackedWidget(vente);
         stackedWidgetvente->setObjectName("stackedWidgetvente");
-        stackedWidgetvente->setGeometry(QRect(0, 60, 1091, 561));
+        stackedWidgetvente->setGeometry(QRect(10, 60, 1091, 561));
         stackedWidgetvente->setStyleSheet(QString::fromUtf8("QStackedWidget {\n"
 "  border: 2px solid black;\n"
 "  border-radius: 4px;\n"
@@ -1771,9 +1748,34 @@ public:
 "}"));
         page_16 = new QWidget();
         page_16->setObjectName("page_16");
-        labelStatVentes = new QLabel(page_16);
-        labelStatVentes->setObjectName("labelStatVentes");
-        labelStatVentes->setGeometry(QRect(20, 10, 1051, 531));
+        pushButton_32 = new QPushButton(page_16);
+        pushButton_32->setObjectName("pushButton_32");
+        pushButton_32->setGeometry(QRect(770, 500, 151, 51));
+        pushButton_32->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    border: 2px solid black;\n"
+"    border-radius: 8px;\n"
+"    font-weight: bold;\n"
+"    font-size: 18px;              /* texte plus grand */\n"
+"    background-color: rgb(41, 102, 148); /* bleu normal */\n"
+"    color: white;\n"
+"    padding: 8px 16px;\n"
+"}\n"
+"\n"
+"/* Quand la souris passe dessus */\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(61, 122, 168); /* bleu plus clair */\n"
+"}\n"
+"\n"
+"/* Quand on clique dessus */\n"
+"QPushButton:pressed {\n"
+"    background-color: rgb(81, 142, 188); /* encore plus clair */\n"
+"}\n"
+"\n"
+"/* Bouton actif (par ex. quand on est sur la page 1) */\n"
+"QPushButton[active=\"true\"] {\n"
+"    background-color: #10b981;  /* vert quand actif */\n"
+"    color: white;\n"
+"}"));
         stackedWidgetvente->addWidget(page_16);
         page_1 = new QWidget();
         page_1->setObjectName("page_1");
@@ -2091,6 +2093,22 @@ public:
 "    padding: 4px;\n"
 "    font-weight: bold;\n"
 "}"));
+        pushButton_36 = new QPushButton(page_1);
+        pushButton_36->setObjectName("pushButton_36");
+        pushButton_36->setGeometry(QRect(670, 500, 221, 31));
+        pushButton_36->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #10b981;   /* normal state */\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #059669;   /* darker on hover */\n"
+"}"));
         lineEdit_supprimer_vente = new QLineEdit(page_1);
         lineEdit_supprimer_vente->setObjectName("lineEdit_supprimer_vente");
         lineEdit_supprimer_vente->setGeometry(QRect(400, 490, 151, 41));
@@ -2137,6 +2155,20 @@ public:
 "    subcontrol-position: top center;    /* titre centr\303\251 */\n"
 "    padding: 2px 10px;\n"
 "}"));
+        pushButton_38 = new QPushButton(page_1);
+        pushButton_38->setObjectName("pushButton_38");
+        pushButton_38->setGeometry(QRect(930, 500, 51, 31));
+        pushButton_38->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #10b981;   /* normal state */\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+""));
+        pushButton_38->setIcon(icon5);
         image_4 = new QLabel(page_1);
         image_4->setObjectName("image_4");
         image_4->setGeometry(QRect(610, 40, 101, 91));
@@ -2176,37 +2208,6 @@ public:
 "    border-top: 6px solid black;       /* black arrow */\n"
 "}\n"
 ""));
-        lineEdit_email = new QLineEdit(page_1);
-        lineEdit_email->setObjectName("lineEdit_email");
-        lineEdit_email->setGeometry(QRect(660, 490, 171, 41));
-        lineEdit_email->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    width: 150px;\n"
-"    height: 150px;\n"
-"    border: 3px solid rgb(245,245,245);\n"
-"    border-radius: 6px;\n"
-"    padding: 6px 12px;\n"
-"    color: rgb(0,0,0);\n"
-"    background-color: rgb(245,245,245); \n"
-"}"));
-        pushButton_2 = new QPushButton(page_1);
-        pushButton_2->setObjectName("pushButton_2");
-        pushButton_2->setGeometry(QRect(850, 500, 81, 29));
-        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}\n"
-""));
-        QIcon icon7(QIcon::fromTheme(QIcon::ThemeIcon::AddressBookNew));
-        pushButton_2->setIcon(icon7);
         stackedWidgetvente->addWidget(page_1);
         label_109->raise();
         groupBox_12->raise();
@@ -2214,12 +2215,12 @@ public:
         lineEdit_vente->raise();
         pushButton_35->raise();
         tableWidgetvente->raise();
+        pushButton_36->raise();
         lineEdit_supprimer_vente->raise();
         pushButton_3->raise();
+        pushButton_38->raise();
         image_4->raise();
         comboBox_10->raise();
-        lineEdit_email->raise();
-        pushButton_2->raise();
         btnpage1vente = new QPushButton(vente);
         btnpage1vente->setObjectName("btnpage1vente");
         btnpage1vente->setGeometry(QRect(10, 20, 101, 51));
@@ -2323,7 +2324,7 @@ public:
 "background-color: rgb(41, 102, 148);}"));
         lineEdit_28 = new QLineEdit(page_14);
         lineEdit_28->setObjectName("lineEdit_28");
-        lineEdit_28->setGeometry(QRect(150, 50, 171, 41));
+        lineEdit_28->setGeometry(QRect(150, 50, 171, 31));
         lineEdit_28->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    /* dark background */\n"
 "	background-color: rgb(255, 255, 255);\n"
@@ -2340,8 +2341,42 @@ public:
 ""));
         lineEdit_29 = new QLineEdit(page_14);
         lineEdit_29->setObjectName("lineEdit_29");
-        lineEdit_29->setGeometry(QRect(150, 110, 171, 41));
+        lineEdit_29->setGeometry(QRect(150, 90, 171, 31));
         lineEdit_29->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
+        lineEdit_30 = new QLineEdit(page_14);
+        lineEdit_30->setObjectName("lineEdit_30");
+        lineEdit_30->setGeometry(QRect(150, 130, 171, 31));
+        lineEdit_30->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
+        lineEdit_31 = new QLineEdit(page_14);
+        lineEdit_31->setObjectName("lineEdit_31");
+        lineEdit_31->setGeometry(QRect(150, 170, 171, 31));
+        lineEdit_31->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    /* dark background */\n"
 "	background-color: rgb(255, 255, 255);\n"
 "    color: #1f2937;              /* typed text color */\n"
@@ -2357,7 +2392,7 @@ public:
 ""));
         lineEdit_32 = new QLineEdit(page_14);
         lineEdit_32->setObjectName("lineEdit_32");
-        lineEdit_32->setGeometry(QRect(150, 330, 171, 41));
+        lineEdit_32->setGeometry(QRect(150, 210, 171, 31));
         lineEdit_32->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    /* dark background */\n"
 "	background-color: rgb(255, 255, 255);\n"
@@ -2372,9 +2407,26 @@ public:
 "    color: white;                /* placeholder text color */\n"
 "}\n"
 ""));
+        lineEdit_33 = new QLineEdit(page_14);
+        lineEdit_33->setObjectName("lineEdit_33");
+        lineEdit_33->setGeometry(QRect(150, 250, 171, 31));
+        lineEdit_33->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
         tableWidgetfour = new QTableWidget(page_14);
-        if (tableWidgetfour->columnCount() < 5)
-            tableWidgetfour->setColumnCount(5);
+        if (tableWidgetfour->columnCount() < 11)
+            tableWidgetfour->setColumnCount(11);
         QTableWidgetItem *__qtablewidgetitem22 = new QTableWidgetItem();
         tableWidgetfour->setHorizontalHeaderItem(0, __qtablewidgetitem22);
         QTableWidgetItem *__qtablewidgetitem23 = new QTableWidgetItem();
@@ -2385,6 +2437,18 @@ public:
         tableWidgetfour->setHorizontalHeaderItem(3, __qtablewidgetitem25);
         QTableWidgetItem *__qtablewidgetitem26 = new QTableWidgetItem();
         tableWidgetfour->setHorizontalHeaderItem(4, __qtablewidgetitem26);
+        QTableWidgetItem *__qtablewidgetitem27 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(5, __qtablewidgetitem27);
+        QTableWidgetItem *__qtablewidgetitem28 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(6, __qtablewidgetitem28);
+        QTableWidgetItem *__qtablewidgetitem29 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(7, __qtablewidgetitem29);
+        QTableWidgetItem *__qtablewidgetitem30 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(8, __qtablewidgetitem30);
+        QTableWidgetItem *__qtablewidgetitem31 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(9, __qtablewidgetitem31);
+        QTableWidgetItem *__qtablewidgetitem32 = new QTableWidgetItem();
+        tableWidgetfour->setHorizontalHeaderItem(10, __qtablewidgetitem32);
         tableWidgetfour->setObjectName("tableWidgetfour");
         tableWidgetfour->setGeometry(QRect(345, 110, 701, 331));
         tableWidgetfour->setStyleSheet(QString::fromUtf8("QTableWidget {\n"
@@ -2574,7 +2638,7 @@ public:
         pushButton_29->setIcon(icon);
         pushButton_30 = new QPushButton(page_14);
         pushButton_30->setObjectName("pushButton_30");
-        pushButton_30->setGeometry(QRect(20, 420, 201, 31));
+        pushButton_30->setGeometry(QRect(20, 470, 201, 31));
         pushButton_30->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #10b981;   /* normal state */\n"
 "    color: white;\n"
@@ -2590,24 +2654,116 @@ public:
 "}"));
         label_81 = new QLabel(page_14);
         label_81->setObjectName("label_81");
-        label_81->setGeometry(QRect(10, 60, 91, 20));
+        label_81->setGeometry(QRect(10, 60, 63, 20));
         label_81->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
         label_82 = new QLabel(page_14);
         label_82->setObjectName("label_82");
-        label_82->setGeometry(QRect(10, 110, 91, 41));
+        label_82->setGeometry(QRect(10, 90, 63, 20));
         label_82->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
         label_83 = new QLabel(page_14);
         label_83->setObjectName("label_83");
-        label_83->setGeometry(QRect(10, 200, 121, 20));
+        label_83->setGeometry(QRect(10, 130, 121, 20));
         label_83->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
         label_84 = new QLabel(page_14);
         label_84->setObjectName("label_84");
-        label_84->setGeometry(QRect(10, 340, 101, 20));
+        label_84->setGeometry(QRect(10, 210, 101, 20));
         label_84->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
         label_85 = new QLabel(page_14);
         label_85->setObjectName("label_85");
-        label_85->setGeometry(QRect(10, 270, 111, 20));
+        label_85->setGeometry(QRect(10, 170, 111, 20));
         label_85->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
+        label_86 = new QLabel(page_14);
+        label_86->setObjectName("label_86");
+        label_86->setGeometry(QRect(10, 250, 121, 20));
+        label_86->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
+        label_87 = new QLabel(page_14);
+        label_87->setObjectName("label_87");
+        label_87->setGeometry(QRect(20, 370, 63, 20));
+        label_87->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
+        radioButton = new QRadioButton(page_14);
+        radioButton->setObjectName("radioButton");
+        radioButton->setGeometry(QRect(140, 370, 111, 25));
+        radioButton->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    padding-left: 8px;\n"
+"background-color: rgb(41, 102, 148);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"    width: 20px;\n"
+"    height: 20px;\n"
+"    border: 2px solid #3b82f6;\n"
+"    border-radius: 6px;      /* rounded corners */\n"
+"    background-color: white;  /* unchecked background */\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: #FFD700;  /* blue fill when checked */\n"
+"}"));
+        radioButton_2 = new QRadioButton(page_14);
+        radioButton_2->setObjectName("radioButton_2");
+        radioButton_2->setGeometry(QRect(140, 400, 111, 25));
+        radioButton_2->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    padding-left: 8px;\n"
+"background-color: rgb(41, 102, 148);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"    width: 20px;\n"
+"    height: 20px;\n"
+"    border: 2px solid #3b82f6;\n"
+"    border-radius: 6px;      /* rounded corners */\n"
+"    background-color: white;  /* unchecked background */\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: #FFD700;  /* blue fill when checked */\n"
+"}"));
+        label_88 = new QLabel(page_14);
+        label_88->setObjectName("label_88");
+        label_88->setGeometry(QRect(10, 300, 63, 20));
+        label_88->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
+        lineEdit_36 = new QLineEdit(page_14);
+        lineEdit_36->setObjectName("lineEdit_36");
+        lineEdit_36->setGeometry(QRect(150, 290, 171, 31));
+        lineEdit_36->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
+        label_89 = new QLabel(page_14);
+        label_89->setObjectName("label_89");
+        label_89->setGeometry(QRect(10, 330, 131, 20));
+        label_89->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);"));
+        lineEdit_37 = new QLineEdit(page_14);
+        lineEdit_37->setObjectName("lineEdit_37");
+        lineEdit_37->setGeometry(QRect(150, 330, 171, 31));
+        lineEdit_37->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
         image_8 = new QLabel(page_14);
         image_8->setObjectName("image_8");
         image_8->setGeometry(QRect(920, 10, 101, 91));
@@ -2635,57 +2791,6 @@ public:
 "}\n"
 ""));
         annulerajout_5->setIcon(icon3);
-        pushButton_37 = new QPushButton(page_14);
-        pushButton_37->setObjectName("pushButton_37");
-        pushButton_37->setGeometry(QRect(20, 470, 201, 31));
-        pushButton_37->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}"));
-        dateEdit_5 = new QDateEdit(page_14);
-        dateEdit_5->setObjectName("dateEdit_5");
-        dateEdit_5->setGeometry(QRect(150, 190, 171, 41));
-        dateEdit_5->setStyleSheet(QString::fromUtf8("QDateEdit {\n"
-"    background-color: rgb(255, 255, 255);   /* white background */\n"
-"    color: rgb(0, 0, 0);                   /* black text */\n"
-"    border: 2px solid #3b82f6;             /* blue border */\n"
-"    border-radius: 8px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"/* Calendar popup text color */\n"
-"QDateEdit QAbstractItemView {\n"
-"    color: black; \n"
-"    background-color: white;\n"
-"}\n"
-""));
-        dateEdit_6 = new QDateEdit(page_14);
-        dateEdit_6->setObjectName("dateEdit_6");
-        dateEdit_6->setGeometry(QRect(150, 260, 171, 41));
-        dateEdit_6->setStyleSheet(QString::fromUtf8("QDateEdit {\n"
-"    background-color: rgb(255, 255, 255);   /* white background */\n"
-"    color: rgb(0, 0, 0);                   /* black text */\n"
-"    border: 2px solid #3b82f6;             /* blue border */\n"
-"    border-radius: 8px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"/* Calendar popup text color */\n"
-"QDateEdit QAbstractItemView {\n"
-"    color: black; \n"
-"    background-color: white;\n"
-"}\n"
-""));
-        dateEdit_6->setCurrentSection(QDateTimeEdit::Section::YearSection);
         stackedWidgetfour->addWidget(page_14);
         page_15 = new QWidget();
         page_15->setObjectName("page_15");
@@ -2733,7 +2838,7 @@ public:
         employer->setObjectName("employer");
         tabWidgetemployer = new QTabWidget(employer);
         tabWidgetemployer->setObjectName("tabWidgetemployer");
-        tabWidgetemployer->setGeometry(QRect(20, 0, 1061, 631));
+        tabWidgetemployer->setGeometry(QRect(20, 30, 1061, 631));
         tabWidgetemployer->setStyleSheet(QString::fromUtf8("/* ---- Style du QTabWidget ---- */\n"
 "QTabWidget {\n"
 "    background-color: rgb(209, 209, 209); /* gris clair */\n"
@@ -2811,43 +2916,6 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName("gridLayout");
-        lineEdit_40 = new QLineEdit(groupBox_11);
-        lineEdit_40->setObjectName("lineEdit_40");
-        lineEdit_40->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}\n"
-"QLineEdit:focus {\n"
-"    border: 2px solid #2563EB;  /* blue highlight */\n"
-"    background-color: #F3F4F6;\n"
-"}\n"
-""));
-
-        gridLayout->addWidget(lineEdit_40, 2, 2, 1, 1);
-
-        label_91 = new QLabel(groupBox_11);
-        label_91->setObjectName("label_91");
-        label_91->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);\n"
-"color: rgb(255, 255, 255);"));
-
-        gridLayout->addWidget(label_91, 0, 0, 1, 1);
-
-        label_97 = new QLabel(groupBox_11);
-        label_97->setObjectName("label_97");
-        label_97->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_97, 6, 0, 1, 1);
-
         radioButton_4 = new QRadioButton(groupBox_11);
         radioButton_4->setObjectName("radioButton_4");
         radioButton_4->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
@@ -2871,86 +2939,6 @@ public:
 
         gridLayout->addWidget(radioButton_4, 12, 1, 1, 1);
 
-        label_93 = new QLabel(groupBox_11);
-        label_93->setObjectName("label_93");
-        label_93->setStyleSheet(QString::fromUtf8("\n"
-"\n"
-"color: rgb(255, 255, 255);background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_93, 9, 0, 1, 1);
-
-        lineEdit_43 = new QLineEdit(groupBox_11);
-        lineEdit_43->setObjectName("lineEdit_43");
-        lineEdit_43->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}"));
-
-        gridLayout->addWidget(lineEdit_43, 7, 2, 1, 1);
-
-        label_95 = new QLabel(groupBox_11);
-        label_95->setObjectName("label_95");
-        label_95->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_95, 4, 0, 1, 1);
-
-        pushButton_6 = new QPushButton(groupBox_11);
-        pushButton_6->setObjectName("pushButton_6");
-        pushButton_6->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}"));
-
-        gridLayout->addWidget(pushButton_6, 16, 0, 1, 2);
-
-        spinBox = new QSpinBox(groupBox_11);
-        spinBox->setObjectName("spinBox");
-        spinBox->setStyleSheet(QString::fromUtf8("QSpinBox {\n"
-"    background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;\n"
-"    border: 2px solid #3b82f6;\n"
-"    border-radius: 8px;\n"
-"    padding: 4px 8px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QSpinBox:focus {\n"
-"    border: 2px solid #2563eb; /* darker blue on focus */\n"
-"}\n"
-"\n"
-"/* Simple blue arrows */\n"
-"QSpinBox::up-arrow {\n"
-"    image: url(\"data:image/svg+xml;utf8,\\\n"
-"<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><polygon points='4,0 8,6 0,6' fill='%233b82f6'/></svg>\");\n"
-"}\n"
-"\n"
-"QSpinBox::down-arrow {\n"
-"    image: url(\"data:image/svg+xml;utf8,\\\n"
-"<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><polygon points='0,0 8,0 4,6' fill='%233b82f6'/></svg>\");\n"
-"}\n"
-""));
-
-        gridLayout->addWidget(spinBox, 6, 2, 1, 1);
-
         label_96 = new QLabel(groupBox_11);
         label_96->setObjectName("label_96");
         label_96->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
@@ -2958,146 +2946,12 @@ public:
 
         gridLayout->addWidget(label_96, 5, 0, 1, 1);
 
-        lineEdit_44 = new QLineEdit(groupBox_11);
-        lineEdit_44->setObjectName("lineEdit_44");
-        lineEdit_44->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}"));
-
-        gridLayout->addWidget(lineEdit_44, 5, 2, 1, 1);
-
-        radioButton_3 = new QRadioButton(groupBox_11);
-        radioButton_3->setObjectName("radioButton_3");
-        radioButton_3->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
-"    color: white;\n"
-"    font-size: 14px;\n"
-"    padding-left: 8px;\n"
-"background-color: rgb(41, 102, 148);\n"
-"}\n"
-"\n"
-"QRadioButton::indicator {\n"
-"    width: 20px;\n"
-"    height: 20px;\n"
-"    border: 2px solid #3b82f6;\n"
-"    border-radius: 6px;      /* rounded corners */\n"
-"    background-color: white;  /* unchecked background */\n"
-"}\n"
-"\n"
-"QRadioButton::indicator:checked {\n"
-"    background-color: #FFD700;  /* blue fill when checked */\n"
-"}"));
-
-        gridLayout->addWidget(radioButton_3, 12, 2, 1, 1);
-
-        pushButton_4 = new QPushButton(groupBox_11);
-        pushButton_4->setObjectName("pushButton_4");
-        pushButton_4->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #10b981;   /* normal state */\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: #059669;   /* darker on hover */\n"
-"}"));
-
-        gridLayout->addWidget(pushButton_4, 15, 0, 1, 2);
-
-        label_92 = new QLabel(groupBox_11);
-        label_92->setObjectName("label_92");
-        label_92->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);\n"
-""));
-
-        gridLayout->addWidget(label_92, 1, 0, 1, 1);
-
         label_47 = new QLabel(groupBox_11);
         label_47->setObjectName("label_47");
         label_47->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
 "background-color: rgb(41, 102, 148);"));
 
         gridLayout->addWidget(label_47, 2, 0, 1, 1);
-
-        lineEdit_41 = new QLineEdit(groupBox_11);
-        lineEdit_41->setObjectName("lineEdit_41");
-        lineEdit_41->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}"));
-
-        gridLayout->addWidget(lineEdit_41, 1, 2, 1, 1);
-
-        lineEdit_39 = new QLineEdit(groupBox_11);
-        lineEdit_39->setObjectName("lineEdit_39");
-        lineEdit_39->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}\n"
-""));
-
-        gridLayout->addWidget(lineEdit_39, 3, 2, 1, 1);
-
-        label_45 = new QLabel(groupBox_11);
-        label_45->setObjectName("label_45");
-        label_45->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_45, 3, 0, 1, 1);
-
-        annulerajout_4 = new QPushButton(groupBox_11);
-        annulerajout_4->setObjectName("annulerajout_4");
-        annulerajout_4->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"\n"
-"	background-color: rgb(220, 20, 60);\n"
-"	\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"      /* darker on hover */\n"
-"	background-color: rgb(140, 0, 0);\n"
-"}\n"
-""));
-        annulerajout_4->setIcon(icon3);
-
-        gridLayout->addWidget(annulerajout_4, 15, 2, 1, 1);
 
         lineEdit_42 = new QLineEdit(groupBox_11);
         lineEdit_42->setObjectName("lineEdit_42");
@@ -3117,17 +2971,9 @@ public:
 
         gridLayout->addWidget(lineEdit_42, 0, 2, 1, 1);
 
-        label_46 = new QLabel(groupBox_11);
-        label_46->setObjectName("label_46");
-        label_46->setStyleSheet(QString::fromUtf8("\n"
-"color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_46, 7, 0, 1, 1);
-
-        lineEdit_38 = new QLineEdit(groupBox_11);
-        lineEdit_38->setObjectName("lineEdit_38");
-        lineEdit_38->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+        lineEdit_44 = new QLineEdit(groupBox_11);
+        lineEdit_44->setObjectName("lineEdit_44");
+        lineEdit_44->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
 "    /* dark background */\n"
 "	background-color: rgb(255, 255, 255);\n"
 "    color: #1f2937;              /* typed text color */\n"
@@ -3141,40 +2987,7 @@ public:
 "    color: white;                /* placeholder text color */\n"
 "}"));
 
-        gridLayout->addWidget(lineEdit_38, 4, 2, 1, 1);
-
-        label_94 = new QLabel(groupBox_11);
-        label_94->setObjectName("label_94");
-        label_94->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
-"background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_94, 12, 0, 1, 1);
-
-        lineEdit = new QLineEdit(groupBox_11);
-        lineEdit->setObjectName("lineEdit");
-        lineEdit->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
-"    /* dark background */\n"
-"	background-color: rgb(255, 255, 255);\n"
-"    color: #1f2937;              /* typed text color */\n"
-"    border: 2px solid #3b82f6;   /* blue border */\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 12px;\n"
-"    font-size: 14px;\n"
-"}\n"
-"\n"
-"QLineEdit::placeholder {\n"
-"    color: white;                /* placeholder text color */\n"
-"}"));
-
-        gridLayout->addWidget(lineEdit, 10, 2, 1, 1);
-
-        label_105 = new QLabel(groupBox_11);
-        label_105->setObjectName("label_105");
-        label_105->setStyleSheet(QString::fromUtf8("\n"
-"\n"
-"color: rgb(255, 255, 255);background-color: rgb(41, 102, 148);"));
-
-        gridLayout->addWidget(label_105, 10, 0, 1, 1);
+        gridLayout->addWidget(lineEdit_44, 5, 2, 1, 1);
 
         dateEdit = new QDateEdit(groupBox_11);
         dateEdit->setObjectName("dateEdit");
@@ -3208,7 +3021,273 @@ public:
 "}\n"
 ""));
 
-        gridLayout->addWidget(dateEdit, 9, 1, 1, 2);
+        gridLayout->addWidget(dateEdit, 9, 2, 1, 1);
+
+        spinBox = new QSpinBox(groupBox_11);
+        spinBox->setObjectName("spinBox");
+        spinBox->setStyleSheet(QString::fromUtf8("QSpinBox {\n"
+"    background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;\n"
+"    border: 2px solid #3b82f6;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px 8px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QSpinBox:focus {\n"
+"    border: 2px solid #2563eb; /* darker blue on focus */\n"
+"}\n"
+"\n"
+"/* Simple blue arrows */\n"
+"QSpinBox::up-arrow {\n"
+"    image: url(\"data:image/svg+xml;utf8,\\\n"
+"<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><polygon points='4,0 8,6 0,6' fill='%233b82f6'/></svg>\");\n"
+"}\n"
+"\n"
+"QSpinBox::down-arrow {\n"
+"    image: url(\"data:image/svg+xml;utf8,\\\n"
+"<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><polygon points='0,0 8,0 4,6' fill='%233b82f6'/></svg>\");\n"
+"}\n"
+""));
+
+        gridLayout->addWidget(spinBox, 6, 2, 1, 1);
+
+        label_45 = new QLabel(groupBox_11);
+        label_45->setObjectName("label_45");
+        label_45->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_45, 3, 0, 1, 1);
+
+        lineEdit_38 = new QLineEdit(groupBox_11);
+        lineEdit_38->setObjectName("lineEdit_38");
+        lineEdit_38->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 12px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}"));
+
+        gridLayout->addWidget(lineEdit_38, 4, 2, 1, 1);
+
+        lineEdit_39 = new QLineEdit(groupBox_11);
+        lineEdit_39->setObjectName("lineEdit_39");
+        lineEdit_39->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 12px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
+
+        gridLayout->addWidget(lineEdit_39, 3, 2, 1, 1);
+
+        label_93 = new QLabel(groupBox_11);
+        label_93->setObjectName("label_93");
+        label_93->setStyleSheet(QString::fromUtf8("\n"
+"\n"
+"color: rgb(255, 255, 255);background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_93, 9, 0, 1, 1);
+
+        lineEdit_41 = new QLineEdit(groupBox_11);
+        lineEdit_41->setObjectName("lineEdit_41");
+        lineEdit_41->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 12px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}"));
+
+        gridLayout->addWidget(lineEdit_41, 1, 2, 1, 1);
+
+        label_94 = new QLabel(groupBox_11);
+        label_94->setObjectName("label_94");
+        label_94->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_94, 12, 0, 1, 1);
+
+        radioButton_3 = new QRadioButton(groupBox_11);
+        radioButton_3->setObjectName("radioButton_3");
+        radioButton_3->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"    padding-left: 8px;\n"
+"background-color: rgb(41, 102, 148);\n"
+"}\n"
+"\n"
+"QRadioButton::indicator {\n"
+"    width: 20px;\n"
+"    height: 20px;\n"
+"    border: 2px solid #3b82f6;\n"
+"    border-radius: 6px;      /* rounded corners */\n"
+"    background-color: white;  /* unchecked background */\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: #FFD700;  /* blue fill when checked */\n"
+"}"));
+
+        gridLayout->addWidget(radioButton_3, 12, 2, 1, 1);
+
+        label_91 = new QLabel(groupBox_11);
+        label_91->setObjectName("label_91");
+        label_91->setStyleSheet(QString::fromUtf8("background-color: rgb(41, 102, 148);\n"
+"color: rgb(255, 255, 255);"));
+
+        gridLayout->addWidget(label_91, 0, 0, 1, 1);
+
+        label_46 = new QLabel(groupBox_11);
+        label_46->setObjectName("label_46");
+        label_46->setStyleSheet(QString::fromUtf8("\n"
+"color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_46, 7, 0, 1, 1);
+
+        label_92 = new QLabel(groupBox_11);
+        label_92->setObjectName("label_92");
+        label_92->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);\n"
+""));
+
+        gridLayout->addWidget(label_92, 1, 0, 1, 1);
+
+        label_97 = new QLabel(groupBox_11);
+        label_97->setObjectName("label_97");
+        label_97->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_97, 6, 0, 1, 1);
+
+        label_95 = new QLabel(groupBox_11);
+        label_95->setObjectName("label_95");
+        label_95->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+"background-color: rgb(41, 102, 148);"));
+
+        gridLayout->addWidget(label_95, 4, 0, 1, 1);
+
+        lineEdit_43 = new QLineEdit(groupBox_11);
+        lineEdit_43->setObjectName("lineEdit_43");
+        lineEdit_43->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 12px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}"));
+
+        gridLayout->addWidget(lineEdit_43, 7, 2, 1, 1);
+
+        lineEdit_40 = new QLineEdit(groupBox_11);
+        lineEdit_40->setObjectName("lineEdit_40");
+        lineEdit_40->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 12px;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+"QLineEdit:focus {\n"
+"    border: 2px solid #2563EB;  /* blue highlight */\n"
+"    background-color: #F3F4F6;\n"
+"}\n"
+""));
+
+        gridLayout->addWidget(lineEdit_40, 2, 2, 1, 1);
+
+        annulerajout_4 = new QPushButton(groupBox_11);
+        annulerajout_4->setObjectName("annulerajout_4");
+        annulerajout_4->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"\n"
+"	background-color: rgb(220, 20, 60);\n"
+"	\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"      /* darker on hover */\n"
+"	background-color: rgb(140, 0, 0);\n"
+"}\n"
+""));
+        annulerajout_4->setIcon(icon3);
+
+        gridLayout->addWidget(annulerajout_4, 15, 2, 1, 1);
+
+        pushButton_6 = new QPushButton(groupBox_11);
+        pushButton_6->setObjectName("pushButton_6");
+        pushButton_6->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #10b981;   /* normal state */\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #059669;   /* darker on hover */\n"
+"}"));
+
+        gridLayout->addWidget(pushButton_6, 16, 0, 1, 2);
+
+        pushButton_4 = new QPushButton(groupBox_11);
+        pushButton_4->setObjectName("pushButton_4");
+        pushButton_4->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #10b981;   /* normal state */\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 8px 20px;\n"
+"    font-size: 14px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #059669;   /* darker on hover */\n"
+"}"));
+
+        gridLayout->addWidget(pushButton_4, 15, 0, 1, 2);
 
         pushButton_8 = new QPushButton(tab_2);
         pushButton_8->setObjectName("pushButton_8");
@@ -3248,7 +3327,7 @@ public:
 "}"));
         pushButton_9 = new QPushButton(tab_2);
         pushButton_9->setObjectName("pushButton_9");
-        pushButton_9->setGeometry(QRect(900, 530, 61, 41));
+        pushButton_9->setGeometry(QRect(920, 540, 61, 41));
         pushButton_9->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #10b981;   /* normal state */\n"
 "    color: white;\n"
@@ -3266,28 +3345,28 @@ public:
         tableWidgetemployer = new QTableWidget(tab_2);
         if (tableWidgetemployer->columnCount() < 11)
             tableWidgetemployer->setColumnCount(11);
-        QTableWidgetItem *__qtablewidgetitem27 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(0, __qtablewidgetitem27);
-        QTableWidgetItem *__qtablewidgetitem28 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(1, __qtablewidgetitem28);
-        QTableWidgetItem *__qtablewidgetitem29 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(2, __qtablewidgetitem29);
-        QTableWidgetItem *__qtablewidgetitem30 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(3, __qtablewidgetitem30);
-        QTableWidgetItem *__qtablewidgetitem31 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(4, __qtablewidgetitem31);
-        QTableWidgetItem *__qtablewidgetitem32 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(5, __qtablewidgetitem32);
         QTableWidgetItem *__qtablewidgetitem33 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(6, __qtablewidgetitem33);
+        tableWidgetemployer->setHorizontalHeaderItem(0, __qtablewidgetitem33);
         QTableWidgetItem *__qtablewidgetitem34 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(7, __qtablewidgetitem34);
+        tableWidgetemployer->setHorizontalHeaderItem(1, __qtablewidgetitem34);
         QTableWidgetItem *__qtablewidgetitem35 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(8, __qtablewidgetitem35);
+        tableWidgetemployer->setHorizontalHeaderItem(2, __qtablewidgetitem35);
         QTableWidgetItem *__qtablewidgetitem36 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(9, __qtablewidgetitem36);
+        tableWidgetemployer->setHorizontalHeaderItem(3, __qtablewidgetitem36);
         QTableWidgetItem *__qtablewidgetitem37 = new QTableWidgetItem();
-        tableWidgetemployer->setHorizontalHeaderItem(10, __qtablewidgetitem37);
+        tableWidgetemployer->setHorizontalHeaderItem(4, __qtablewidgetitem37);
+        QTableWidgetItem *__qtablewidgetitem38 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(5, __qtablewidgetitem38);
+        QTableWidgetItem *__qtablewidgetitem39 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(6, __qtablewidgetitem39);
+        QTableWidgetItem *__qtablewidgetitem40 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(7, __qtablewidgetitem40);
+        QTableWidgetItem *__qtablewidgetitem41 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(8, __qtablewidgetitem41);
+        QTableWidgetItem *__qtablewidgetitem42 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(9, __qtablewidgetitem42);
+        QTableWidgetItem *__qtablewidgetitem43 = new QTableWidgetItem();
+        tableWidgetemployer->setHorizontalHeaderItem(10, __qtablewidgetitem43);
         tableWidgetemployer->setObjectName("tableWidgetemployer");
         tableWidgetemployer->setGeometry(QRect(280, 120, 771, 401));
         tableWidgetemployer->setStyleSheet(QString::fromUtf8("QTableWidget {\n"
@@ -3316,6 +3395,8 @@ public:
 "    font-weight: bold;\n"
 "}"));
         comboBox_5 = new QComboBox(tab_2);
+        comboBox_5->addItem(QString());
+        comboBox_5->addItem(QString());
         comboBox_5->addItem(QString());
         comboBox_5->addItem(QString());
         comboBox_5->setObjectName("comboBox_5");
@@ -3459,35 +3540,8 @@ public:
         label_100->raise();
         tab_4 = new QWidget();
         tab_4->setObjectName("tab_4");
-        agestatemp = new QPushButton(tab_4);
-        agestatemp->setObjectName("agestatemp");
-        agestatemp->setGeometry(QRect(110, 100, 90, 29));
-        empstat = new QLabel(tab_4);
-        empstat->setObjectName("empstat");
-        empstat->setGeometry(QRect(340, 140, 491, 361));
         tabWidgetemployer->addTab(tab_4, QString());
         stackedWidget->addWidget(employer);
-        pushButton_5 = new QPushButton(centralWidget);
-        pushButton_5->setObjectName("pushButton_5");
-        pushButton_5->setGeometry(QRect(20, 0, 111, 41));
-        pushButton_5->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"\n"
-"	background-color: rgb(220, 20, 60);\n"
-"	\n"
-"    color: white;\n"
-"    border: none;\n"
-"    border-radius: 8px;\n"
-"    padding: 8px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"      /* darker on hover */\n"
-"	background-color: rgb(140, 0, 0);\n"
-"}\n"
-"\n"
-""));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName("menuBar");
@@ -3503,8 +3557,8 @@ public:
         retranslateUi(MainWindow);
 
         stackedWidgetclient->setCurrentIndex(0);
-        stackedWidgetstock->setCurrentIndex(1);
-        stackedWidgetvente->setCurrentIndex(0);
+        stackedWidgetstock->setCurrentIndex(0);
+        stackedWidgetvente->setCurrentIndex(1);
         tabWidgetemployer->setCurrentIndex(0);
 
 
@@ -3559,18 +3613,14 @@ public:
         label_36->setText(QCoreApplication::translate("MainWindow", "t\303\251l\303\251phone", nullptr));
         label_37->setText(QCoreApplication::translate("MainWindow", "Num\303\251ro de ", nullptr));
         label_39->setText(QCoreApplication::translate("MainWindow", "Date de naissance", nullptr));
-        datedenaissance_3->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
         annulerajout_client->setText(QString());
         pushButton_modifierClient->setText(QCoreApplication::translate("MainWindow", "Modifier le Client", nullptr));
         label_38->setText(QCoreApplication::translate("MainWindow", "CIN Client", nullptr));
         pushButton_pdfclient->setText(QString());
         image_3->setText(QString());
         label_3->setText(QCoreApplication::translate("MainWindow", "Exporter format PDF", nullptr));
-        nettoyage->setText(QString());
-        labelclientsexe->setText(QString());
         label_40->setText(QCoreApplication::translate("MainWindow", "           Sexe", nullptr));
-        labelclientavis->setText(QString());
-        label_41->setText(QCoreApplication::translate("MainWindow", " Les Avis Des Client", nullptr));
+        label_41->setText(QCoreApplication::translate("MainWindow", "Date de Creation ", nullptr));
         comboBox_8->setItemText(0, QCoreApplication::translate("MainWindow", "prix", nullptr));
         comboBox_8->setItemText(1, QCoreApplication::translate("MainWindow", "date d'achat", nullptr));
 
@@ -3615,17 +3665,16 @@ public:
         comboBox->setItemText(6, QCoreApplication::translate("MainWindow", "Crucial", nullptr));
         comboBox->setItemText(7, QCoreApplication::translate("MainWindow", "Vivo", nullptr));
 
-        dateEdit_2->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
-        dateEdit_4->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
         image_7->setText(QString());
         label_75->setText(QCoreApplication::translate("MainWindow", "  Liste des Stocks", nullptr));
         pushButton_22->setText(QString());
+        pushButton_2->setText(QCoreApplication::translate("MainWindow", "SMS", nullptr));
         groupBox_10->setTitle(QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         btnPage2stock->setText(QCoreApplication::translate("MainWindow", "Statistique", nullptr));
         btnPage1stock->setText(QCoreApplication::translate("MainWindow", "Stock", nullptr));
         label_77->setText(QCoreApplication::translate("MainWindow", " Gestion de stock", nullptr));
         btnpage2vente->setText(QCoreApplication::translate("MainWindow", "statistique", nullptr));
-        labelStatVentes->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        pushButton_32->setText(QCoreApplication::translate("MainWindow", "stat", nullptr));
         groupBox_12->setTitle(QCoreApplication::translate("MainWindow", "Ajouter vente /Modifier vente", nullptr));
         label_101->setText(QCoreApplication::translate("MainWindow", "ID vente :", nullptr));
         lineEdit_45->setText(QString());
@@ -3635,7 +3684,6 @@ public:
         label_102->setText(QCoreApplication::translate("MainWindow", "taux TVA :", nullptr));
         label_103->setText(QCoreApplication::translate("MainWindow", "remise", nullptr));
         label_104->setText(QCoreApplication::translate("MainWindow", "Date :", nullptr));
-        dateEdit_3->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
         label_106->setText(QString());
         label_107->setText(QCoreApplication::translate("MainWindow", "Montant total :", nullptr));
         label_108->setText(QCoreApplication::translate("MainWindow", "Mode de paiement :", nullptr));
@@ -3658,32 +3706,44 @@ public:
         ___qtablewidgetitem20->setText(QCoreApplication::translate("MainWindow", "Montant Total", nullptr));
         QTableWidgetItem *___qtablewidgetitem21 = tableWidgetvente->horizontalHeaderItem(5);
         ___qtablewidgetitem21->setText(QCoreApplication::translate("MainWindow", "Mode De Paiment", nullptr));
+        pushButton_36->setText(QCoreApplication::translate("MainWindow", "Exportation format Excel", nullptr));
         lineEdit_supprimer_vente->setText(QString());
         pushButton_3->setText(QString());
         label_109->setText(QCoreApplication::translate("MainWindow", "liste des ventes", nullptr));
+        pushButton_38->setText(QString());
         image_4->setText(QString());
         comboBox_10->setItemText(0, QCoreApplication::translate("MainWindow", "date", nullptr));
 
-        lineEdit_email->setText(QString());
-        pushButton_2->setText(QCoreApplication::translate("MainWindow", "QR", nullptr));
         btnpage1vente->setText(QCoreApplication::translate("MainWindow", "vente", nullptr));
         label_110->setText(QCoreApplication::translate("MainWindow", "            Gestion Vente", nullptr));
-        btnpage1four->setText(QCoreApplication::translate("MainWindow", "Appareils", nullptr));
+        btnpage1four->setText(QCoreApplication::translate("MainWindow", "Fournisseurs", nullptr));
         label_78->setText(QString());
-        label_79->setText(QCoreApplication::translate("MainWindow", "Ajout/Modif Appareil", nullptr));
+        label_79->setText(QCoreApplication::translate("MainWindow", "Ajout/Modif Fournisseur", nullptr));
         QTableWidgetItem *___qtablewidgetitem22 = tableWidgetfour->horizontalHeaderItem(0);
-        ___qtablewidgetitem22->setText(QCoreApplication::translate("MainWindow", "reference", nullptr));
+        ___qtablewidgetitem22->setText(QCoreApplication::translate("MainWindow", "Nom", nullptr));
         QTableWidgetItem *___qtablewidgetitem23 = tableWidgetfour->horizontalHeaderItem(1);
-        ___qtablewidgetitem23->setText(QCoreApplication::translate("MainWindow", "marque", nullptr));
+        ___qtablewidgetitem23->setText(QCoreApplication::translate("MainWindow", "Pr\303\251nom", nullptr));
         QTableWidgetItem *___qtablewidgetitem24 = tableWidgetfour->horizontalHeaderItem(2);
-        ___qtablewidgetitem24->setText(QCoreApplication::translate("MainWindow", "datedachat", nullptr));
+        ___qtablewidgetitem24->setText(QCoreApplication::translate("MainWindow", "CIN", nullptr));
         QTableWidgetItem *___qtablewidgetitem25 = tableWidgetfour->horizontalHeaderItem(3);
-        ___qtablewidgetitem25->setText(QCoreApplication::translate("MainWindow", "datedernierentretien", nullptr));
+        ___qtablewidgetitem25->setText(QCoreApplication::translate("MainWindow", "Contrat", nullptr));
         QTableWidgetItem *___qtablewidgetitem26 = tableWidgetfour->horizontalHeaderItem(4);
-        ___qtablewidgetitem26->setText(QCoreApplication::translate("MainWindow", "etatproduit", nullptr));
+        ___qtablewidgetitem26->setText(QCoreApplication::translate("MainWindow", "Commande", nullptr));
+        QTableWidgetItem *___qtablewidgetitem27 = tableWidgetfour->horizontalHeaderItem(5);
+        ___qtablewidgetitem27->setText(QCoreApplication::translate("MainWindow", "Numero", nullptr));
+        QTableWidgetItem *___qtablewidgetitem28 = tableWidgetfour->horizontalHeaderItem(6);
+        ___qtablewidgetitem28->setText(QCoreApplication::translate("MainWindow", "commande", nullptr));
+        QTableWidgetItem *___qtablewidgetitem29 = tableWidgetfour->horizontalHeaderItem(7);
+        ___qtablewidgetitem29->setText(QCoreApplication::translate("MainWindow", "Type de produit", nullptr));
+        QTableWidgetItem *___qtablewidgetitem30 = tableWidgetfour->horizontalHeaderItem(8);
+        ___qtablewidgetitem30->setText(QCoreApplication::translate("MainWindow", "Facture", nullptr));
+        QTableWidgetItem *___qtablewidgetitem31 = tableWidgetfour->horizontalHeaderItem(9);
+        ___qtablewidgetitem31->setText(QCoreApplication::translate("MainWindow", "livraison-R\303\251ception", nullptr));
+        QTableWidgetItem *___qtablewidgetitem32 = tableWidgetfour->horizontalHeaderItem(10);
+        ___qtablewidgetitem32->setText(QCoreApplication::translate("MainWindow", "Sexe", nullptr));
         comboBox_9->setItemText(0, QCoreApplication::translate("MainWindow", "   A-Z", nullptr));
 
-        label_80->setText(QCoreApplication::translate("MainWindow", "Liste Des Appareils", nullptr));
+        label_80->setText(QCoreApplication::translate("MainWindow", "Liste Des Fournisseurs", nullptr));
         pushButton_25->setText(QCoreApplication::translate("MainWindow", "Trier", nullptr));
         lineEdit_34->setText(QCoreApplication::translate("MainWindow", "Rechercher parCIN", nullptr));
         pushButton_26->setText(QCoreApplication::translate("MainWindow", "Rechercher:", nullptr));
@@ -3691,61 +3751,64 @@ public:
         pushButton_28->setText(QString());
         lineEdit_35->setText(QCoreApplication::translate("MainWindow", "Supprimer par CIN", nullptr));
         pushButton_29->setText(QString());
-        pushButton_30->setText(QCoreApplication::translate("MainWindow", "Valider l'appareil", nullptr));
-        label_81->setText(QCoreApplication::translate("MainWindow", "Reference", nullptr));
-        label_82->setText(QCoreApplication::translate("MainWindow", "Marque", nullptr));
-        label_83->setText(QCoreApplication::translate("MainWindow", "Date d'achat", nullptr));
-        label_84->setText(QCoreApplication::translate("MainWindow", "Etat produit", nullptr));
-        label_85->setText(QCoreApplication::translate("MainWindow", "Date dernier Entretien", nullptr));
+        pushButton_30->setText(QCoreApplication::translate("MainWindow", "Valider le Fournisseur", nullptr));
+        label_81->setText(QCoreApplication::translate("MainWindow", "NOM", nullptr));
+        label_82->setText(QCoreApplication::translate("MainWindow", "Pr\303\251nom", nullptr));
+        label_83->setText(QCoreApplication::translate("MainWindow", "CIN Fournisseur", nullptr));
+        label_84->setText(QCoreApplication::translate("MainWindow", "Commande", nullptr));
+        label_85->setText(QCoreApplication::translate("MainWindow", "Contrat", nullptr));
+        label_86->setText(QCoreApplication::translate("MainWindow", "Type de Produit", nullptr));
+        label_87->setText(QCoreApplication::translate("MainWindow", "Sexe", nullptr));
+        radioButton->setText(QCoreApplication::translate("MainWindow", "Homme", nullptr));
+        radioButton_2->setText(QCoreApplication::translate("MainWindow", "Femme", nullptr));
+        label_88->setText(QCoreApplication::translate("MainWindow", "Facture", nullptr));
+        label_89->setText(QCoreApplication::translate("MainWindow", "Livraison/R\303\251ception", nullptr));
         image_8->setText(QString());
         annulerajout_5->setText(QString());
-        pushButton_37->setText(QCoreApplication::translate("MainWindow", "modifier l'appareil", nullptr));
-        dateEdit_5->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
-        dateEdit_6->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
         btnpage2four->setText(QCoreApplication::translate("MainWindow", "Stastique", nullptr));
-        label_90->setText(QCoreApplication::translate("MainWindow", "Gestion Appareils", nullptr));
+        label_90->setText(QCoreApplication::translate("MainWindow", "Gestion Fournisseur", nullptr));
         groupBox_11->setTitle(QCoreApplication::translate("MainWindow", "Ajouter employ\303\251e/Modifieer", nullptr));
-        label_91->setText(QCoreApplication::translate("MainWindow", "Nom", nullptr));
-        label_97->setText(QCoreApplication::translate("MainWindow", "Absences", nullptr));
         radioButton_4->setText(QCoreApplication::translate("MainWindow", "Male", nullptr));
-        label_93->setText(QCoreApplication::translate("MainWindow", "date de naissance", nullptr));
-        label_95->setText(QCoreApplication::translate("MainWindow", "Adresse", nullptr));
-        pushButton_6->setText(QCoreApplication::translate("MainWindow", "modifier", nullptr));
         label_96->setText(QCoreApplication::translate("MainWindow", "Slaire", nullptr));
-        radioButton_3->setText(QCoreApplication::translate("MainWindow", "Female", nullptr));
-        pushButton_4->setText(QCoreApplication::translate("MainWindow", "Sauvgarder", nullptr));
-        label_92->setText(QCoreApplication::translate("MainWindow", "Prenom", nullptr));
         label_47->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
         label_45->setText(QCoreApplication::translate("MainWindow", "Numero tel", nullptr));
-        annulerajout_4->setText(QString());
-        label_46->setText(QCoreApplication::translate("MainWindow", "post", nullptr));
+        label_93->setText(QCoreApplication::translate("MainWindow", "date de naissance", nullptr));
         label_94->setText(QCoreApplication::translate("MainWindow", "Sexe", nullptr));
-        label_105->setText(QCoreApplication::translate("MainWindow", "pwd", nullptr));
-        dateEdit->setDisplayFormat(QCoreApplication::translate("MainWindow", "yyyy-MM-dd", nullptr));
+        radioButton_3->setText(QCoreApplication::translate("MainWindow", "Female", nullptr));
+        label_91->setText(QCoreApplication::translate("MainWindow", "Nom", nullptr));
+        label_46->setText(QCoreApplication::translate("MainWindow", "post", nullptr));
+        label_92->setText(QCoreApplication::translate("MainWindow", "Prenom", nullptr));
+        label_97->setText(QCoreApplication::translate("MainWindow", "Absences", nullptr));
+        label_95->setText(QCoreApplication::translate("MainWindow", "Adresse", nullptr));
+        annulerajout_4->setText(QString());
+        pushButton_6->setText(QCoreApplication::translate("MainWindow", "modifier", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("MainWindow", "Sauvgarder", nullptr));
         pushButton_8->setText(QString());
         pushButton_9->setText(QString());
-        QTableWidgetItem *___qtablewidgetitem27 = tableWidgetemployer->horizontalHeaderItem(0);
-        ___qtablewidgetitem27->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
-        QTableWidgetItem *___qtablewidgetitem28 = tableWidgetemployer->horizontalHeaderItem(1);
-        ___qtablewidgetitem28->setText(QCoreApplication::translate("MainWindow", "Nom", nullptr));
-        QTableWidgetItem *___qtablewidgetitem29 = tableWidgetemployer->horizontalHeaderItem(2);
-        ___qtablewidgetitem29->setText(QCoreApplication::translate("MainWindow", "Pr\303\251nom", nullptr));
-        QTableWidgetItem *___qtablewidgetitem30 = tableWidgetemployer->horizontalHeaderItem(3);
-        ___qtablewidgetitem30->setText(QCoreApplication::translate("MainWindow", "Num Tel", nullptr));
-        QTableWidgetItem *___qtablewidgetitem31 = tableWidgetemployer->horizontalHeaderItem(4);
-        ___qtablewidgetitem31->setText(QCoreApplication::translate("MainWindow", "Adresse", nullptr));
-        QTableWidgetItem *___qtablewidgetitem32 = tableWidgetemployer->horizontalHeaderItem(5);
-        ___qtablewidgetitem32->setText(QCoreApplication::translate("MainWindow", "Salaire", nullptr));
-        QTableWidgetItem *___qtablewidgetitem33 = tableWidgetemployer->horizontalHeaderItem(6);
-        ___qtablewidgetitem33->setText(QCoreApplication::translate("MainWindow", "Absence", nullptr));
-        QTableWidgetItem *___qtablewidgetitem34 = tableWidgetemployer->horizontalHeaderItem(7);
-        ___qtablewidgetitem34->setText(QCoreApplication::translate("MainWindow", "Post", nullptr));
-        QTableWidgetItem *___qtablewidgetitem35 = tableWidgetemployer->horizontalHeaderItem(8);
-        ___qtablewidgetitem35->setText(QCoreApplication::translate("MainWindow", "Date Naissance", nullptr));
-        QTableWidgetItem *___qtablewidgetitem36 = tableWidgetemployer->horizontalHeaderItem(9);
-        ___qtablewidgetitem36->setText(QCoreApplication::translate("MainWindow", "Sexe", nullptr));
-        comboBox_5->setItemText(0, QCoreApplication::translate("MainWindow", "salaire", nullptr));
-        comboBox_5->setItemText(1, QCoreApplication::translate("MainWindow", "age", nullptr));
+        QTableWidgetItem *___qtablewidgetitem33 = tableWidgetemployer->horizontalHeaderItem(0);
+        ___qtablewidgetitem33->setText(QCoreApplication::translate("MainWindow", "ID", nullptr));
+        QTableWidgetItem *___qtablewidgetitem34 = tableWidgetemployer->horizontalHeaderItem(1);
+        ___qtablewidgetitem34->setText(QCoreApplication::translate("MainWindow", "Nom", nullptr));
+        QTableWidgetItem *___qtablewidgetitem35 = tableWidgetemployer->horizontalHeaderItem(2);
+        ___qtablewidgetitem35->setText(QCoreApplication::translate("MainWindow", "Pr\303\251nom", nullptr));
+        QTableWidgetItem *___qtablewidgetitem36 = tableWidgetemployer->horizontalHeaderItem(3);
+        ___qtablewidgetitem36->setText(QCoreApplication::translate("MainWindow", "Num Tel", nullptr));
+        QTableWidgetItem *___qtablewidgetitem37 = tableWidgetemployer->horizontalHeaderItem(4);
+        ___qtablewidgetitem37->setText(QCoreApplication::translate("MainWindow", "Adresse", nullptr));
+        QTableWidgetItem *___qtablewidgetitem38 = tableWidgetemployer->horizontalHeaderItem(5);
+        ___qtablewidgetitem38->setText(QCoreApplication::translate("MainWindow", "Salaire", nullptr));
+        QTableWidgetItem *___qtablewidgetitem39 = tableWidgetemployer->horizontalHeaderItem(6);
+        ___qtablewidgetitem39->setText(QCoreApplication::translate("MainWindow", "Absence", nullptr));
+        QTableWidgetItem *___qtablewidgetitem40 = tableWidgetemployer->horizontalHeaderItem(7);
+        ___qtablewidgetitem40->setText(QCoreApplication::translate("MainWindow", "Post", nullptr));
+        QTableWidgetItem *___qtablewidgetitem41 = tableWidgetemployer->horizontalHeaderItem(8);
+        ___qtablewidgetitem41->setText(QCoreApplication::translate("MainWindow", "Date Naissance", nullptr));
+        QTableWidgetItem *___qtablewidgetitem42 = tableWidgetemployer->horizontalHeaderItem(9);
+        ___qtablewidgetitem42->setText(QCoreApplication::translate("MainWindow", "Sexe", nullptr));
+        comboBox_5->setItemText(0, QCoreApplication::translate("MainWindow", "post ", nullptr));
+        comboBox_5->setItemText(1, QCoreApplication::translate("MainWindow", "salaire", nullptr));
+        comboBox_5->setItemText(2, QCoreApplication::translate("MainWindow", "age", nullptr));
+        comboBox_5->setItemText(3, QCoreApplication::translate("MainWindow", "Nouvel \303\251l\303\251ment", nullptr));
 
         pushButton_24->setText(QCoreApplication::translate("MainWindow", "Recherche", nullptr));
         label_98->setText(QCoreApplication::translate("MainWindow", "Exporter en Excel", nullptr));
@@ -3754,10 +3817,7 @@ public:
         label_100->setText(QCoreApplication::translate("MainWindow", "               Gestin Emplyo\303\251s", nullptr));
         image_9->setText(QString());
         tabWidgetemployer->setTabText(tabWidgetemployer->indexOf(tab_2), QCoreApplication::translate("MainWindow", "Employ\303\251s", nullptr));
-        agestatemp->setText(QCoreApplication::translate("MainWindow", "age", nullptr));
-        empstat->setText(QString());
         tabWidgetemployer->setTabText(tabWidgetemployer->indexOf(tab_4), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
-        pushButton_5->setText(QCoreApplication::translate("MainWindow", "LOGOUT", nullptr));
     } // retranslateUi
 
 };

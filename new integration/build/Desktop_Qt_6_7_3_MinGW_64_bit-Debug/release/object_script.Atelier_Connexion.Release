@@ -1,14 +1,11 @@
-release/appareils.o
-release/arduino.o
 release/client.o
+release/contenir.o
 release/employes.o
-release/logindialog.o
 release/main.o
 release/mainwindow.o
 release/connection.o
 release/produit.o
 release/smtp.o
 release/vente.o
-release/moc_logindialog.o
 release/moc_mainwindow.o
 release/moc_smtp.o
