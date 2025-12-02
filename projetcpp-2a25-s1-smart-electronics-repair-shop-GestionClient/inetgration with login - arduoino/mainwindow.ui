@@ -2501,7 +2501,7 @@ QPushButton[active=&quot;true&quot;] {
      <widget class="QStackedWidget" name="stackedWidgetvente">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>-10</x>
         <y>60</y>
         <width>1091</width>
         <height>561</height>
@@ -2790,7 +2790,7 @@ color: rgb(255, 255, 255)</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>290</y>
+           <y>330</y>
            <width>141</width>
            <height>20</height>
           </rect>
@@ -2807,7 +2807,7 @@ color: rgb(255, 255, 255)</string>
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>290</y>
+           <y>330</y>
            <width>110</width>
            <height>31</height>
           </rect>
@@ -2840,7 +2840,7 @@ QRadioButton::indicator:checked {
          <property name="geometry">
           <rect>
            <x>160</x>
-           <y>320</y>
+           <y>360</y>
            <width>161</width>
            <height>24</height>
           </rect>
@@ -3059,9 +3059,9 @@ QPushButton:hover {
        <widget class="QTableWidget" name="tableWidgetvente">
         <property name="geometry">
          <rect>
-          <x>360</x>
-          <y>180</y>
-          <width>591</width>
+          <x>350</x>
+          <y>170</y>
+          <width>621</width>
           <height>301</height>
          </rect>
         </property>
@@ -3126,7 +3126,7 @@ QHeaderView::section {
        <widget class="QLineEdit" name="lineEdit_supprimer_vente">
         <property name="geometry">
          <rect>
-          <x>400</x>
+          <x>310</x>
           <y>490</y>
           <width>151</width>
           <height>41</height>
@@ -3150,7 +3150,7 @@ QHeaderView::section {
        <widget class="QPushButton" name="pushButton_3">
         <property name="geometry">
          <rect>
-          <x>570</x>
+          <x>460</x>
           <y>500</y>
           <width>51</width>
           <height>29</height>
@@ -3185,9 +3185,9 @@ QPushButton:hover {
        <widget class="QLabel" name="label_109">
         <property name="geometry">
          <rect>
-          <x>590</x>
-          <y>150</y>
-          <width>121</width>
+          <x>610</x>
+          <y>140</y>
+          <width>161</width>
           <height>41</height>
          </rect>
         </property>
@@ -3204,7 +3204,7 @@ QPushButton:hover {
 }</string>
         </property>
         <property name="text">
-         <string>liste des ventes</string>
+         <string>  liste des ventes</string>
         </property>
        </widget>
        <widget class="QLabel" name="image_4">
@@ -3231,7 +3231,7 @@ QPushButton:hover {
         <property name="geometry">
          <rect>
           <x>910</x>
-          <y>90</y>
+          <y>80</y>
           <width>101</width>
           <height>41</height>
          </rect>
@@ -3276,7 +3276,7 @@ QComboBox::down-arrow {
        <widget class="QLineEdit" name="lineEdit_email">
         <property name="geometry">
          <rect>
-          <x>660</x>
+          <x>790</x>
           <y>490</y>
           <width>171</width>
           <height>41</height>
@@ -3300,8 +3300,8 @@ QComboBox::down-arrow {
        <widget class="QPushButton" name="pushButton_2">
         <property name="geometry">
          <rect>
-          <x>850</x>
-          <y>500</y>
+          <x>980</x>
+          <y>490</y>
           <width>81</width>
           <height>29</height>
          </rect>
@@ -3329,6 +3329,30 @@ QPushButton:hover {
          <iconset theme="QIcon::ThemeIcon::AddressBookNew"/>
         </property>
        </widget>
+       <widget class="QPushButton" name="pushButton_expor">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>490</y>
+          <width>181</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #10b981;   /* normal state */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}</string>
+        </property>
+        <property name="text">
+         <string>exportation pdf</string>
+        </property>
+       </widget>
        <zorder>label_109</zorder>
        <zorder>groupBox_12</zorder>
        <zorder>pushButton_34</zorder>
@@ -3341,6 +3365,7 @@ QPushButton:hover {
        <zorder>comboBox_10</zorder>
        <zorder>lineEdit_email</zorder>
        <zorder>pushButton_2</zorder>
+       <zorder>pushButton_expor</zorder>
       </widget>
      </widget>
      <widget class="QPushButton" name="btnpage1vente">

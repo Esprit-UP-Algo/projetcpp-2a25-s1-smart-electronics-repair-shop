@@ -110,7 +110,7 @@ bool vente::ajouter()
     if (montanttotal <= 0)
         erreurs += "- Le montant total doit être supérieur à 0.\n";
 
-    // --- Vérifier s’il y a des erreurs ---
+    // --- Vérifier s'il y a des erreurs ---
     if (!erreurs.isEmpty()) {
         QMessageBox::warning(nullptr, "Erreurs de saisie", erreurs);
         return false;
@@ -152,9 +152,6 @@ bool vente::ajouter()
     QMessageBox::information(nullptr, "Succès ✅", "La vente a été ajoutée avec succès !");
     return true;
 }
-
-
-
 
 // Afficher sales
 void vente::afficher(Ui::MainWindow *ui)
@@ -201,6 +198,7 @@ bool vente::existe(QString idvente)
         return false;
     }
 }
+
 
 
 bool vente::supprimer(QString idvente)

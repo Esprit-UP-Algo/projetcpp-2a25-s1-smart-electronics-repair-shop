@@ -14,6 +14,12 @@
 #include <QPixmap>
 #include <QBuffer>
 
+#include <QPdfWriter>
+#include <QPainter>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDate>
+
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -1557,210 +1563,475 @@ void MainWindow::on_btnpage2vente_clicked()
 {
     ui->stackedWidgetvente->setCurrentIndex(2);
 
-    // REQUÊTE PAR MOIS
+    // REQUÊTE : total des ventes par mois
     QSqlQuery query(
         "SELECT TO_CHAR(DATEDEVENTE, 'YYYY-MM') as MOIS, "
-        "MIN(MONTANTTOTAL) as MIN_MONTANT, "
-        "MAX(MONTANTTOTAL) as MAX_MONTANT, "
-        "AVG(MONTANTTOTAL) as MOYENNE, "
-        "SUM(MONTANTTOTAL) as TOTAL_MENSUEL, "
-        "COUNT(*) as NB_VENTES "
+        "SUM(MONTANTTOTAL) as TOTAL_MENSUEL "
         "FROM VENTES "
         "GROUP BY TO_CHAR(DATEDEVENTE, 'YYYY-MM') "
-        "ORDER BY MOIS DESC"
+        "ORDER BY MOIS ASC"      // ordre chronologique
         );
 
     QVector<QString> mois;
-    QVector<double> minMontants;
-    QVector<double> maxMontants;
-    QVector<double> moyMontants;
     QVector<double> totaux;
 
     while (query.next()) {
         mois.append(query.value(0).toString());
-        minMontants.append(query.value(1).toDouble());
-        maxMontants.append(query.value(2).toDouble());
-        moyMontants.append(query.value(3).toDouble());
-        totaux.append(query.value(4).toDouble());
+        totaux.append(query.value(1).toDouble());
     }
 
     if (mois.isEmpty()) {
-        QMessageBox::information(this, "Aucune donnée", "Aucune vente trouvée pour générer les statistiques.");
+        QMessageBox::information(this, "Aucune donnée", "Aucune vente trouvée.");
         return;
     }
 
-    // CRÉATION DU GRAPHIQUE
+    // Dimensions du graphique
     int width = ui->labelStatVentes->width();
     int height = ui->labelStatVentes->height();
 
     if (width == 0 || height == 0) {
-        width = 700;
-        height = 450;
+        width = 700; height = 450;
     }
 
     QPixmap pix(width, height);
-
-    // Fond dégradé élégant
     QPainter p(&pix);
     p.setRenderHint(QPainter::Antialiasing);
-    QLinearGradient bgGradient(0, 0, 0, height);
-    bgGradient.setColorAt(0, QColor(248, 250, 252));
-    bgGradient.setColorAt(1, QColor(241, 245, 249));
-    p.fillRect(0, 0, width, height, bgGradient);
 
-    // Titre avec ombre
+    // Fond dégradé
+    QLinearGradient bg(0, 0, 0, height);
+    bg.setColorAt(0, QColor(248, 250, 252));
+    bg.setColorAt(1, QColor(241, 245, 249));
+    p.fillRect(0, 0, width, height, bg);
+
+    // Titre
     p.setPen(QColor(30, 41, 59));
-    p.setFont(QFont("Segoe UI", 18, QFont::Bold));
-    p.drawText(QRect(0, 20, width, 30), Qt::AlignCenter, "📊 RAPPORT MENSUEL DES VENTES");
+    p.setFont(QFont("Segoe UI", 17, QFont::Bold));
+    p.drawText(QRect(0, 20, width, 40), Qt::AlignCenter, "📈 Évolution des Ventes Mensuelles");
 
-    // Sous-titre
-    p.setFont(QFont("Segoe UI", 10));
-    p.setPen(QColor(100, 116, 139));
-    p.drawText(QRect(0, 52, width, 20), Qt::AlignCenter, "Analyse comparative des performances");
+    // Marges
+    int marginLeft = 70;
+    int marginBottom = 60;
+    int marginTop = 110;
+    int marginRight = 30;
 
-    // Légende moderne avec design carte
-    int legendX = width - 180;
-    int legendY = 90;
+    int graphWidth = width - marginLeft - marginRight;
+    int graphHeight = height - marginBottom - marginTop;
 
-    // Fond de la légende avec ombre
-    p.setPen(Qt::NoPen);
-    p.setBrush(QColor(255, 255, 255, 230));
-    p.drawRoundedRect(legendX - 10, legendY - 10, 170, 130, 8, 8);
+    int baseY = height - marginBottom;
 
-    // Ombre de la légende
-    p.setBrush(QColor(0, 0, 0, 15));
-    p.drawRoundedRect(legendX - 8, legendY - 8, 170, 130, 8, 8);
-
-    // Redessiner la carte par-dessus l'ombre
-    p.setBrush(QColor(255, 255, 255));
-    p.drawRoundedRect(legendX - 10, legendY - 10, 170, 130, 8, 8);
-
-    QString legendLabels[4] = {"Minimum", "Maximum", "Moyenne", "Total"};
-    QColor colors[4] = {
-        QColor(239, 68, 68),   // Rouge moderne
-        QColor(59, 130, 246),  // Bleu moderne
-        QColor(251, 146, 60),  // Orange moderne
-        QColor(34, 197, 94)    // Vert moderne
-    };
-
-    p.setFont(QFont("Segoe UI", 9, QFont::DemiBold));
-    for (int i = 0; i < 4; i++) {
-        // Pastille colorée avec dégradé
-        QLinearGradient dotGradient(legendX, legendY + i * 28, legendX + 18, legendY + i * 28 + 18);
-        dotGradient.setColorAt(0, colors[i].lighter(110));
-        dotGradient.setColorAt(1, colors[i]);
-        p.setBrush(dotGradient);
-        p.setPen(Qt::NoPen);
-        p.drawRoundedRect(legendX, legendY + i * 28, 18, 18, 4, 4);
-
-        p.setPen(QColor(51, 65, 85));
-        p.drawText(legendX + 25, legendY + i * 28 + 13, legendLabels[i]);
-    }
-
-    // Dimensions du graphique
-    int margin = 80;
-    int topMargin = 140;
-    int graphWidth = width - margin - 200;
-    int graphHeight = height - topMargin - 80;
-    int baseY = height - 70;
-
-    // Échelle
+    // Trouver la valeur max
     double maxValue = 0;
-    for (double value : maxMontants) {
-        if (value > maxValue) maxValue = value;
-    }
+    for (double v : totaux)
+        if (v > maxValue) maxValue = v;
     if (maxValue == 0) maxValue = 1;
 
-    // Grille en arrière-plan
+    // Grille horizontale
     p.setPen(QPen(QColor(226, 232, 240), 1, Qt::DashLine));
     for (int i = 0; i <= 5; i++) {
         int y = baseY - (graphHeight * i / 5);
-        p.drawLine(margin, y, margin + graphWidth, y);
+        p.drawLine(marginLeft, y, marginLeft + graphWidth, y);
+
+        // Labels Y
+        p.setPen(QColor(100, 116, 139));
+        p.setFont(QFont("Segoe UI", 8));
+        p.drawText(10, y - 5, QString("%1 DT").arg(maxValue * i / 5, 0, 'f', 0));
+        p.setPen(QPen(QColor(226, 232, 240), 1, Qt::DashLine));
     }
 
-    // Axes principaux
+    // AXES
     p.setPen(QPen(QColor(148, 163, 184), 2));
-    p.drawLine(margin, baseY - graphHeight, margin, baseY);
-    p.drawLine(margin, baseY, margin + graphWidth, baseY);
+    p.drawLine(marginLeft, baseY - graphHeight, marginLeft, baseY);
+    p.drawLine(marginLeft, baseY, marginLeft + graphWidth, baseY);
 
-    // Graduations axe Y avec style moderne
-    p.setFont(QFont("Segoe UI", 8));
-    p.setPen(QColor(100, 116, 139));
-    for (int i = 0; i <= 5; i++) {
-        double value = maxValue * i / 5;
-        int y = baseY - (graphHeight * i / 5);
-        p.drawText(QRect(10, y - 10, margin - 15, 20), Qt::AlignRight | Qt::AlignVCenter,
-                   QString("%1 DT").arg(value, 0, 'f', 0));
-    }
+    // COURBE
+    QPainterPath path;
+    QPainterPath fillPath;
+    QColor lineColor(59, 130, 246);
 
-    // Barres groupées avec dégradés et ombres
-    int barGroupWidth = graphWidth / mois.size();
-    int barWidth = qMax(8, barGroupWidth / 5);
-    int spacing = 2;
+    bool firstPoint = true;
 
-    for (int i = 0; i < mois.size(); i++) {
-        int groupX = margin + (i * barGroupWidth) + (barGroupWidth - 4*barWidth - 3*spacing) / 2;
+    for (int i = 0; i < mois.size(); ++i) {
+        double value = totaux[i];
 
-        // Dessiner chaque barre avec dégradé
-        for (int j = 0; j < 4; j++) {
-            double value;
-            if (j == 0) value = minMontants[i];
-            else if (j == 1) value = maxMontants[i];
-            else if (j == 2) value = moyMontants[i];
-            else value = totaux[i];
+        int x = marginLeft + (i * graphWidth / (mois.size() - 1));
+        int y = baseY - ((value / maxValue) * graphHeight);
 
-            int barHeight = (value / maxValue) * graphHeight;
-            int barX = groupX + j * (barWidth + spacing);
-
-            // Ombre de la barre
-            p.setPen(Qt::NoPen);
-            p.setBrush(QColor(0, 0, 0, 20));
-            p.drawRoundedRect(barX + 2, baseY - barHeight + 2, barWidth, barHeight, 3, 3);
-
-            // Barre avec dégradé
-            QLinearGradient barGradient(barX, baseY - barHeight, barX + barWidth, baseY);
-            barGradient.setColorAt(0, colors[j].lighter(115));
-            barGradient.setColorAt(1, colors[j]);
-            p.setBrush(barGradient);
-            p.drawRoundedRect(barX, baseY - barHeight, barWidth, barHeight, 3, 3);
-
-            // Valeur au-dessus de la barre si assez haute
-            if (barHeight > 30) {
-                p.setPen(Qt::white);
-                p.setFont(QFont("Segoe UI", 7, QFont::Bold));
-                QString valueText = QString("%1").arg(value, 0, 'f', 0);
-                p.save();
-                p.translate(barX + barWidth/2, baseY - barHeight + 15);
-                p.rotate(-90);
-                p.drawText(0, 0, valueText);
-                p.restore();
-            }
+        if (firstPoint) {
+            path.moveTo(x, y);
+            fillPath.moveTo(x, baseY);
+            fillPath.lineTo(x, y);
+            firstPoint = false;
+        } else {
+            path.lineTo(x, y);
+            fillPath.lineTo(x, y);
         }
+    }
+    // fermer le dégradé
+    fillPath.lineTo(marginLeft + graphWidth, baseY);
+    fillPath.closeSubpath();
 
-        // Label du mois
-        QString moisFormate = mois[i].right(2) + "/" + mois[i].left(4);
+    // Dégradé sous la courbe
+    QLinearGradient grad(0, marginTop, 0, baseY);
+    grad.setColorAt(0, QColor(59, 130, 246, 90));
+    grad.setColorAt(1, QColor(59, 130, 246, 10));
+    p.fillPath(fillPath, grad);
+
+    // Tracé de la courbe
+    p.setPen(QPen(lineColor, 3));
+    p.drawPath(path);
+
+    // Points + valeurs
+    for (int i = 0; i < mois.size(); ++i) {
+        double value = totaux[i];
+
+        int x = marginLeft + (i * graphWidth / (mois.size() - 1));
+        int y = baseY - ((value / maxValue) * graphHeight);
+
+        // Point
+        p.setBrush(Qt::white);
+        p.setPen(QPen(lineColor, 2));
+        p.drawEllipse(QPoint(x, y), 5, 5);
+
+        // Valeur au-dessus
+        p.setPen(QColor(15, 23, 42));
+        p.setFont(QFont("Segoe UI", 8, QFont::Bold));
+        p.drawText(x - 25, y - 15, QString("%1 DT").arg(value, 0, 'f', 0));
+
+        // Mois
+        QString m = mois[i].right(2) + "/" + mois[i].left(4);
         p.setPen(QColor(71, 85, 105));
-        p.setFont(QFont("Segoe UI", 8, QFont::DemiBold));
-        p.drawText(QRect(groupX - 15, baseY + 8, barGroupWidth, 20),
-                   Qt::AlignCenter, moisFormate);
+        p.setFont(QFont("Segoe UI", 9));
+        p.drawText(x - 30, baseY + 20, 60, 20, Qt::AlignCenter, m);
     }
 
-    // Résumé dans une carte élégante
-    int summaryY = baseY + 35;
-    p.setPen(Qt::NoPen);
-    p.setBrush(QColor(59, 130, 246, 15));
-    p.drawRoundedRect(margin, summaryY, graphWidth, 30, 6, 6);
-
-    p.setFont(QFont("Segoe UI", 9, QFont::DemiBold));
-    p.setPen(QColor(30, 58, 138));
-    p.drawText(QRect(margin, summaryY, graphWidth, 30), Qt::AlignCenter,
-               QString("📈 Analyse sur %1 mois  •  Total général: %2 DT  •  Moyenne globale: %3 DT")
-                   .arg(mois.size())
-                   .arg(std::accumulate(totaux.begin(), totaux.end(), 0.0), 0, 'f', 0)
-                   .arg(std::accumulate(moyMontants.begin(), moyMontants.end(), 0.0) / mois.size(), 0, 'f', 0));
-
+    // Fin
     p.end();
-
     ui->labelStatVentes->setPixmap(pix);
     ui->labelStatVentes->setScaledContents(true);
+}
+
+
+//////////exportation
+QString MainWindow::genererHTMLFacture(const vente &v)
+{
+    QString html;
+    html = R"(
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .invoice-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invoice-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+
+        .invoice-table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .invoice-table th {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 15px;
+            color: #2c3e50;
+        }
+
+        .invoice-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .invoice-table tr:hover {
+            background-color: #e8f5e8;
+            transition: background-color 0.3s ease;
+        }
+
+        .total-section {
+            text-align: center;
+            margin: 40px 0 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 2px dashed #4CAF50;
+        }
+
+        .total-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .total-label {
+            font-size: 18px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #ecf0f1;
+            color: #95a5a6;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8e6cf 0%, #dcedc1 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>🎉 Facture de Vente</h1>
+            <div class="subtitle">Reçu officiel • Transaction validée</div>
+        </div>
+
+        <table class="invoice-table">
+            <tr>
+                <th>Description</th>
+                <th>Détails</th>
+            </tr>
+            <tr>
+                <td><strong>ID Vente</strong></td>
+                <td><span class="highlight">)" + v.getidvente() + R"(</span></td>
+            </tr>
+            <tr>
+                <td><strong>Date de Vente</strong></td>
+                <td>📅 )" + v.getdatedevente() + R"(</td>
+            </tr>
+            <tr>
+                <td><strong>Mode de Paiement</strong></td>
+                <td>💳 )" + v.getmodedepaiment() + R"(</td>
+            </tr>
+            <tr>
+                <td><strong>Taux TVA</strong></td>
+                <td>🏷️ )" + QString::number(v.gettauxtva()) + R"( %</td>
+            </tr>
+            <tr>
+                <td><strong>Remise Appliquée</strong></td>
+                <td>🎁 )" + QString::number(v.getremise()) + R"( %</td>
+            </tr>
+        </table>
+
+        <div class="total-section">
+            <div class="total-label">Montant Total TTC</div>
+            <div class="total-amount">)" + QString::number(v.getmontanttotal()) + R"( DT</div>
+            <div style="margin-top: 10px;">
+                <span class="badge">PAYMENT CONFIRMED</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>Merci pour votre confiance ! Votre satisfaction est notre priorité.</div>
+            <div class="contact-info">
+                <div class="contact-item">📧 contact@entreprise.tn</div>
+                <div class="contact-item">📞 +216 00 000 000</div>
+                <div class="contact-item">🌐 www.entreprise.tn</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+)";
+
+    return html;
+}
+
+
+
+// -------------------------------------------------------
+// Exportation PDF quand on clique sur le bouton
+// -------------------------------------------------------
+void MainWindow::on_pushButton_expor_clicked()
+{
+    // Vérifier la sélection
+    int row = ui->tableWidgetvente->currentRow();
+    if (row < 0) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner une vente !");
+        return;
+    }
+
+    // ------------------------
+    // Récupération sécurisée
+    // ------------------------
+
+    QString idvente;
+    QString date;
+    int tva = 0;
+    int remise = 0;
+    double total = 0;
+    QString mode;
+
+    auto getText = [&](int col) -> QString {
+        QTableWidgetItem *item = ui->tableWidgetvente->item(row, col);
+        if (item)
+            return item->text();
+        return "";
+    };
+
+    idvente = getText(0);
+    date    = getText(1);
+    tva     = getText(2).toInt();
+    remise  = getText(3).toInt();
+    total   = getText(4).toDouble();
+    mode    = getText(5);
+
+    // ------------------------
+    // DEBUG AUTO
+    // ------------------------
+    QString dbg =
+        "ID Vente : " + idvente + "\n" +
+        "Date : "     + date    + "\n" +
+        "TVA : "      + QString::number(tva) + "\n" +
+        "Remise : "   + QString::number(remise) + "\n" +
+        "Montant : "  + QString::number(total) + "\n" +
+        "Mode : "     + mode;
+
+    QMessageBox::information(this, "DEBUG", dbg);
+
+    // ------------------------
+    // Remplir objet vente
+    // ------------------------
+    vente v;
+    v.setidvente(idvente);
+    v.setdatedevente(date);
+    v.settauxtva(tva);
+    v.setremise(remise);
+    v.setmontanttotal(total);
+    v.setmodedepaiment(mode);
+
+    // ------------------------
+    // Choisir le fichier PDF
+    // ------------------------
+    QString filename = QFileDialog::getSaveFileName(
+        this,
+        "Enregistrer la facture",
+        "Facture_Vente.pdf",
+        "PDF (*.pdf)");
+
+    if (filename.isEmpty())
+        return;
+
+    // ------------------------
+    // Génération du PDF
+    // ------------------------
+    QPdfWriter pdf(filename);
+    pdf.setPageSize(QPageSize(QPageSize::A4));
+    pdf.setResolution(300);
+
+    QPainter painter(&pdf);
+
+    if (!painter.isActive()) {
+        QMessageBox::warning(this, "Erreur", "Impossible de créer le PDF !");
+        return;
+    }
+
+    QString html = genererHTMLFacture(v);  // <<< NE PAS TOUCHER
+
+    QTextDocument doc;
+    doc.setHtml(html);
+    doc.setPageSize(QSizeF(pdf.width(), pdf.height()));
+    doc.drawContents(&painter);
+
+    QMessageBox::information(this, "Succès", "Facture exportée avec succès !");
 }

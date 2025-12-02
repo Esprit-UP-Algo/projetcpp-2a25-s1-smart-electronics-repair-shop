@@ -6,7 +6,7 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../../mainwindow.h"
+#include "C:/Users/mouna/OneDrive/2eme projet/11projetcpp-2a25-s1-smart-electronics-repair-shop-GestionClient01/integration il jdida/new integration/mainwindow.h"
 #include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 

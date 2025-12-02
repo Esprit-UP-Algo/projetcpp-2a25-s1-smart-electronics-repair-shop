@@ -21,6 +21,7 @@ private:
     int montanttotal;
     QString modedepaiment;
 
+
 public:
     vente();
     // Constructeur

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include "arduino.h"
 #include "client.h"
+#include "vente.h"
 #include <QMainWindow>
 #include "logindialog.h"
 namespace Ui {
@@ -64,6 +65,7 @@ private slots:
     void on_pushButton_31_clicked();
     void on_pushButton_2_clicked();
     void on_btnpage2vente_clicked();
+    void on_pushButton_expor_clicked();
 
 private:
 
@@ -79,8 +81,10 @@ private:
     void disableUnauthorizedButtons();
     QByteArray data;
     Arduino a;
+    vente v;
     bool emailValide(const QString &email);
     QString generateVenteString(int row);
     void genererQR(const QString &emailClient, const QString &subject, const QString &body);
+    QString genererHTMLFacture(const vente &v);
 };
 #endif // MAINWINDOW_H
