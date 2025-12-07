@@ -32,6 +32,7 @@ SOURCES += \
     client.cpp \
     contenir.cpp \
     employes.cpp \
+    interventionpopup.cpp \
     logindialog.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     client.h \
     contenir.h \
     employes.h \
+    interventionpopup.h \
     logindialog.h \
         mainwindow.h \
     connection.h \

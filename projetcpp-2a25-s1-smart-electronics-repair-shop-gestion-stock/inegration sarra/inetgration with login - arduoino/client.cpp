@@ -75,8 +75,11 @@ bool Client::modifier()
 {
     QSqlQuery query;
 
-    query.prepare("UPDATE CLIENTS SET NOM=:nom, PRENOM=:prenom, ADRESSE=:adresse, NT=:nt, BIRTH=:birth, SEXE=:sexe "
-                  "WHERE CIN=:cin");
+    query.prepare(
+        "UPDATE CLIENTS SET NOM=:nom, PRENOM=:prenom, ADRESSE=:adresse, NT=:nt, "
+        "BIRTH=TO_DATE(:birth, 'YYYY-MM-DD'), SEXE=:sexe "
+        "WHERE CIN=:cin"
+        );
 
     query.bindValue(":cin", cin);
     query.bindValue(":nom", nom);
@@ -86,17 +89,13 @@ bool Client::modifier()
     query.bindValue(":birth", birth);
     query.bindValue(":sexe", sexe);
 
+    if (!query.exec()) {
+        qDebug() << "❌ Modification erreur:" << query.lastError().text();
+        return false;
+    }
 
-    bool test = query.exec();
-
-    if (test)
-        qDebug() << "✅ Modification réussie pour le client:" << nom << prenom;
-    else
-        qDebug() << "❌ Erreur de modification:" << query.lastError().text();
-
-    return test;
+    return true;
 }
-
 bool Client::existe(QString cin)
 {
     QSqlQuery query;
@@ -171,27 +170,28 @@ bool Client::rech(QString recherche, Ui::MainWindow *ui)
 bool Client::ajouter()
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO CLIENTS (CIN, NOM, PRENOM, ADRESSE, NT, BIRTH, SEXE, CREATIONDATE) "
-                  "VALUES (:cin, :nom, :prenom, :adresse, :nt, :birth, :sexe, :creationdate)");
+    query.prepare(
+        "INSERT INTO CLIENTS (CIN, NOM, PRENOM, ADRESSE, NT, BIRTH, SEXE, CREATIONDATE) "
+        "VALUES (:cin, :nom, :prenom, :adresse, :nt, TO_DATE(:birth, 'YYYY-MM-DD'), :sexe, TO_DATE(:creationdate, 'YYYY-MM-DD'))"
+        );
 
     query.bindValue(":cin", cin);
     query.bindValue(":nom", nom);
     query.bindValue(":prenom", prenom);
     query.bindValue(":adresse", adresse);
     query.bindValue(":nt", nt);
-    query.bindValue(":birth", birth);
+    query.bindValue(":birth", birth);               // must be "YYYY-MM-DD"
     query.bindValue(":sexe", sexe);
-    query.bindValue(":creationdate", creationdate);
-
+    query.bindValue(":creationdate", creationdate); // must be "YYYY-MM-DD"
 
     bool test = query.exec();
 
-    if (test) {
-        qDebug() << "✅ Ajout réussi pour le client:" << nom << prenom;
-    } else {
+    if (!test) {
         qDebug() << "❌ Erreur d'ajout du client:" << query.lastError().text();
         qDebug() << "Query:" << query.lastQuery();
-        qDebug() << "Values - CIN:" << cin << "Nom:" << nom << "Prenom:" << prenom;
+        qDebug() << "CIN:" << cin << "| Birth:" << birth << "| Creation:" << creationdate;
+    } else {
+        qDebug() << "✅ Ajout réussi client:" << nom << prenom;
     }
 
     return test;

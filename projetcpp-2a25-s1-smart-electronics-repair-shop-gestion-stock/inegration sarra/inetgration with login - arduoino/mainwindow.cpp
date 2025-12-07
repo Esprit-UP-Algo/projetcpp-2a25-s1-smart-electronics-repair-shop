@@ -39,6 +39,7 @@
 #include "appareils.h"
 #include "logindialog.h"
 #include "contenir.h"
+#include "interventionpopup.h"
 
 // Original constructor (for backward compatibility)
 MainWindow::MainWindow(QWidget *parent) :
@@ -111,7 +112,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidgetvente->verticalHeader()->setVisible(false);
 
 }
+//malek
+void MainWindow::on_tableWidgetfour_cellClicked(int row, int column)
+{
+    // Check if column 6 was clicked (columns are 0-indexed, so column 6 = 7th column)
+    if (column == 5)
+    {
+        // Take the reference from column 1 (second column)
+        QString refProduit = ui->tableWidgetfour->item(row, 0)->text();
 
+        // Show the popup
+        InterventionPopup *popup = new InterventionPopup(refProduit, this);
+        popup->exec();
+    }
+}
 // New constructor with user info
 MainWindow::MainWindow(const UserInfo &userInfo, QWidget *parent) :
     QMainWindow(parent),
@@ -536,7 +550,7 @@ void MainWindow::on_pushButton_modifierClient_clicked()
         if (c.existe(c.getidclient()))   // only CIN check
         {
             c.modifier();
-           /*Smtp mail ;
+           Smtp mail ;
 
             mail.setUser("elyeskalai9@gmail.com");
             mail.setPassword("fmosngpfjgpkyuvy");
@@ -547,7 +561,7 @@ void MainWindow::on_pushButton_modifierClient_clicked()
                 "Compte modifier",
                 "Bonjour " + c.getnom()+"   " +c.getprenom()+ ",\nVotre compte de smart electronique repair shop a été modifier.\nCIN : " + c.getidclient()+ ",.\nNumero Télephone : " + c.getnt()+ ",.\nAnniversaire : " + c.getbirth()+ ",.\nAdresse-Mail: " + c.getadresse());
 
-            QMessageBox::information(this, "✔️ Modifié", "Client modifié avec succès");*/
+            QMessageBox::information(this, "✔️ Modifié", "Client modifié avec succès");
             MainWindow::on_annulerajout_client_clicked();
         }
         else
@@ -1920,7 +1934,7 @@ void MainWindow::on_pushButton_30_clicked(){
 void MainWindow::on_pushButton_37_clicked(){
     appareils a(ui);
 
-   a.existe(a.getreference());
+    bool test=a.existe(a.getreference());
     a.modifier();
     a.afficher(ui);
     MainWindow::annulerajout_5();
@@ -1965,6 +1979,202 @@ void MainWindow::on_pushButton_26_clicked()
         QMessageBox::critical(this, tr("Erreur"), tr("Aucun produit trouvé !"));
     }
 }
+void MainWindow::on_pushButton_28_clicked(){
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Save PDF",
+        "Statistiques_Appareils.pdf",
+        "PDF Files (*.pdf)"
+        );
+    if (fileName.isEmpty()) return;
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+
+    // ---- 1. Calculate statistics from table (same as your diagram function) ----
+    QMap<QString, int> stats;
+
+    int rows = ui->tableWidgetfour->rowCount();
+    for (int i = 0; i < rows; i++)
+    {
+        QTableWidgetItem *itemEtat = ui->tableWidgetfour->item(i, 4);
+
+        if (!itemEtat) continue;
+
+        QString etat = itemEtat->text().trimmed();
+        if (etat.isEmpty()) continue;
+
+        stats[etat]++;
+    }
+
+    if (stats.isEmpty()) {
+        QMessageBox::warning(this, "Error", "No data found in the table!");
+        return;
+    }
+
+    // ---- 2. Generate PDF content with the actual statistics ----
+    QString content;
+    content += "<html><head>";
+    content += "<style>"
+               "body { font-family: Arial, sans-serif; margin: 40px; }"
+               "h1 { text-align: center; color: #296694; }"
+               "table { width: 100%; border-collapse: collapse; margin: 20px 0; }"
+               "th { background-color: #296694; color: white; padding: 12px; text-align: left; }"
+               "td { padding: 10px; border-bottom: 1px solid #ddd; }"
+               "tr:nth-child(even) { background-color: #f9f9f9; }"
+               ".total { font-weight: bold; background-color: #e6f2ff; }"
+               "</style>";
+    content += "</head><body>";
+
+    content += "<h1>📊 Statistiques des États des Appareils</h1>";
+    content += "<p style='text-align: center; color: #666;'>Date: " + QDate::currentDate().toString("dd/MM/yyyy") + "</p>";
+
+    // Statistics table
+    content += "<table>";
+    content += "<tr><th>État</th><th>Nombre d'Appareils</th><th>Pourcentage</th></tr>";
+
+    int total = 0;
+    for (auto value : stats.values()) {
+        total += value;
+    }
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        QString etat = it.key();
+        int count = it.value();
+        double percentage = (double(count) / total) * 100;
+
+        content += "<tr>";
+        content += "<td>" + etat + "</td>";
+        content += "<td>" + QString::number(count) + "</td>";
+        content += "<td>" + QString::number(percentage, 'f', 1) + "%</td>";
+        content += "</tr>";
+    }
+
+    // Total row
+    content += "<tr class='total'>";
+    content += "<td><strong>Total</strong></td>";
+    content += "<td><strong>" + QString::number(total) + "</strong></td>";
+    content += "<td><strong>100%</strong></td>";
+    content += "</tr>";
+
+    content += "</table>";
+
+    // Summary section
+    content += "<div style='margin-top: 30px;'>";
+    content += "<h3>Résumé des Statistiques</h3>";
+    content += "<ul>";
+    content += "<li>Nombre total d'appareils: <strong>" + QString::number(total) + "</strong></li>";
+    content += "<li>Nombre d'états différents: <strong>" + QString::number(stats.size()) + "</strong></li>";
+
+    // Find most common state
+    QString mostCommonState;
+    int maxCount = 0;
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        if (it.value() > maxCount) {
+            maxCount = it.value();
+            mostCommonState = it.key();
+        }
+    }
+    content += "<li>État le plus fréquent: <strong>" + mostCommonState + "</strong> (" + QString::number(maxCount) + " appareils)</li>";
+
+    content += "</ul>";
+    content += "</div>";
+
+    content += "</body></html>";
+
+    // ---- 3. Create and print PDF ----
+    QTextDocument doc;
+    doc.setHtml(content);
+    doc.print(&printer);
+
+    QMessageBox::information(this, "PDF Export", "✅ Les statistiques ont été exportées en PDF avec succès !");
+}
+void MainWindow::on_btnpage2four_clicked()
+{
+    qDebug() << "DEBUG: START Dynamic Diagram";
+
+    // ---- 1. Read data from table dynamically ----
+    QMap<QString, int> stats;
+
+    int rows = ui->tableWidgetfour->rowCount();
+    for (int i = 0; i < rows; i++)
+    {
+        QTableWidgetItem *itemEtat = ui->tableWidgetfour->item(i, 4);
+
+        if (!itemEtat) continue;
+
+        QString etat = itemEtat->text().trimmed();
+        if (etat.isEmpty()) continue;
+
+        stats[etat]++;
+    }
+
+    if (stats.isEmpty()) {
+        qDebug() << "DEBUG: No data found.";
+        return;
+    }
+
+    // ---- 2. Prepare pixmap ----
+    int width = 500, height = 350;
+    QPixmap pix(width, height);
+    pix.fill(Qt::white);
+
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+
+    // ---- Title ----
+    p.setPen(Qt::black);
+    p.setFont(QFont("Arial", 14, QFont::Bold));
+    p.drawText(0, 10, width, 30, Qt::AlignCenter, "Statistiques des États");
+
+    // ---- 3. Bar chart parameters ----
+    int margin = 50;
+    int barWidth = 40;
+    int spacing = 40;
+
+    int maxBarHeight = height - 120;
+    int maxValue = 1;
+    for (auto value : stats.values())
+        if (value > maxValue) maxValue = value;
+
+    // ---- 4. Draw bars ----
+    int x = margin;
+
+    p.setFont(QFont("Arial", 9));
+
+    for (auto it = stats.begin(); it != stats.end(); ++it)
+    {
+        QString label = it.key();
+        int value = it.value();
+
+        int barHeight = int((double(value) / maxValue) * maxBarHeight);
+
+        // Random color for each state
+        QColor color(rand() % 200, rand() % 200, rand() % 200);
+        p.setBrush(color);
+        p.setPen(Qt::NoPen);
+
+        // Draw bar
+        p.drawRect(x, height - 60 - barHeight, barWidth, barHeight);
+
+        // Draw numeric value above bar
+        p.setPen(Qt::black);
+        p.drawText(x, height - 75 - barHeight, barWidth, 20,
+                   Qt::AlignCenter, QString::number(value));
+
+        // Draw label
+        p.drawText(x - 10, height - 50, barWidth + 20, 40,
+                   Qt::AlignCenter, label);
+
+        x += barWidth + spacing;
+    }
+
+    p.end();
+
+
+}
 
 // Employee Search Function
 void MainWindow::on_pushButton_24_clicked()
@@ -2005,6 +2215,79 @@ void MainWindow::on_pushButton_31_clicked()
     }
 }
 // ADD these permission functions
+void MainWindow::genererAttestationTravail(int idEmploye)
+{
+    Employee emp;
+    Employee employe = emp.getEmployeeById(idEmploye);
+
+    if (employe.getid() == 0) {
+        QMessageBox::warning(this, "Erreur", "Employé non trouvé !");
+        return;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Enregistrer l'attestation de travail",
+        employe.getnom() + "_" + employe.getprenom() + "_Attestation_Travail.pdf",
+        "PDF Files (*.pdf)"
+        );
+
+    if (fileName.isEmpty()) return;
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setPageSize(QPageSize::A4);
+
+    // HTML très simple qui fonctionne
+    QString content;
+    content += "<html><body>";
+    content += "<h1>ATTESTATION DE TRAVAIL</h1>";
+    content += "<h2>SMART ELECTRONIQUE</h2>";
+    content += "<hr>";
+
+    QString currentDate = QDate::currentDate().toString("dd/MM/yyyy");
+    content += "<p><strong>Ariana, le " + currentDate + "</strong></p>";
+    content += "<p>Référence: ATT-" + QString::number(idEmploye) + "-" + QDate::currentDate().toString("yyyyMMdd") + "</p>";
+    content += "<hr>";
+
+    content += "<h3>OBJET : Attestation de travail</h3>";
+    content += "<p>À qui de droit,</p>";
+    content += "<p>Nous soussigné(e)s, <strong>Smart Electronique</strong>, société spécialisée dans la réparation électronique,</p>";
+    content += "<p>certifions que <strong>Monsieur/Madame " + employe.getprenom().toUpper() + " " + employe.getnom().toUpper() + "</strong>,</p>";
+    content += "<p>né(e) le <strong>" + employe.getdatenaissance() + "</strong>,</p>";
+    content += "<p>demeurant au <strong>" + employe.getadresse() + "</strong>,</p>";
+    content += "<p>est régulièrement employé(e) par notre société en qualité de :</p>";
+
+    content += "<h2><center>" + employe.getposte().toUpper() + "</center></h2>";
+
+    content += "<p>Cette attestation est délivrée à l'intéressé(e) pour faire valoir ce que de droit.</p>";
+    content += "<p><em>L'intéressé(e) travaille actuellement dans notre établissement et y occupe les fonctions susmentionnées.</em></p>";
+
+    // Signatures
+    content += "<br><br><br><br>";
+    content += "<table width='100%'>";
+    content += "<tr>";
+    content += "<td width='45%' align='center'>_________________________<br>Le Responsable des RH<br>Cachet et signature</td>";
+    content += "<td width='10%'></td>";
+    content += "<td width='45%' align='center'>_________________________<br>Le Directeur Général<br>Cachet et signature</td>";
+    content += "</tr>";
+    content += "</table>";
+
+    content += "<br><br><br>";
+    content += "<hr>";
+    content += "<p align='center'><small>SMART ELECTRONIQUE - Centre de Réparation Électronique Agréé<br>";
+    content += "Siège Social: Ariana, Tunisie - Tél: +216 98 952 656<br>";
+    content += "Email: contact@smartelectronique.com - R.C. : XXXXXX - I.F. : XXXXXX</small></p>";
+
+    content += "</body></html>";
+
+    QTextDocument doc;
+    doc.setHtml(content);
+    doc.print(&printer);
+
+    QMessageBox::information(this, "PDF Export", "✅ Attestation professionnelle générée avec succès !");
+}
 void MainWindow::on_pushButton_9_clicked()
 {
     QList<QTableWidgetItem*> selectedItems = ui->tableWidgetemployer->selectedItems();
@@ -2021,15 +2304,19 @@ void MainWindow::on_pushButton_9_clicked()
     QString prenom = ui->tableWidgetemployer->item(row, 2)->text();
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Générer l'attestation",
-                                  QString("Voulez-vous générer une attestation de travail pour :\n%1 %2 ?")
-                                      .arg(prenom).arg(nom),
-                                  QMessageBox::Yes | QMessageBox::No);
+    reply = QMessageBox::question(
+        this,
+        "Générer l'attestation",
+        QString("Voulez-vous générer une attestation de travail pour :\n%1 %2 ?")
+            .arg(prenom).arg(nom),
+        QMessageBox::Yes | QMessageBox::No
+        );
 
     if (reply == QMessageBox::Yes) {
-        //genererAttestationTravail(idEmploye);
+        genererAttestationTravail(idEmploye);
     }
 }
+
 //stat emp
 void MainWindow::statempage()
 {
@@ -2701,17 +2988,60 @@ void MainWindow::on_pushButton_10_clicked()
 
 }
 //sms
-void MainWindow::on_pushButton_sms_clicked(){
+void MainWindow::on_pushButton_sms_clicked() {
+    qDebug() << "=== DEBUG: SMS Button Click Handler START ===";
+
+    // Safety: Initialize networkManager if not already done
+    if (!networkManager) {
+        qDebug() << "DEBUG: networkManager is null, creating new instance...";
+        networkManager = new QNetworkAccessManager(this);
+        if (networkManager) {
+            qDebug() << "DEBUG: Successfully created networkManager at:" << (void*)networkManager;
+        } else {
+            qDebug() << "ERROR: Failed to create networkManager!";
+            QMessageBox::critical(this, "Erreur", "Impossible d'initialiser le gestionnaire réseau!");
+            return;
+        }
+    } else {
+        qDebug() << "DEBUG: networkManager exists at:" << (void*)networkManager;
+    }
+
+    // Check row selection
     int row = ui->tableWidgetstock->currentRow();
     if (row < 0) {
+        qDebug() << "DEBUG: No row selected, showing warning";
         QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un produit !");
+        qDebug() << "=== DEBUG: SMS Button Click Handler END (no selection) ===";
+        return;
+    }
+    qDebug() << "DEBUG: Selected row:" << row;
+
+    // Get table items
+    QTableWidgetItem *itemNom = ui->tableWidgetstock->item(row, 1);
+    QTableWidgetItem *itemRef = ui->tableWidgetstock->item(row, 0);
+    QTableWidgetItem *itemQuantite = ui->tableWidgetstock->item(row, 5);
+
+    qDebug() << "DEBUG: Item pointers - Nom:" << (void*)itemNom
+             << "Ref:" << (void*)itemRef
+             << "Quantite:" << (void*)itemQuantite;
+
+    if (!itemNom || !itemRef || !itemQuantite) {
+        qDebug() << "DEBUG: One or more table items are null";
+        QMessageBox::warning(this, "Erreur", "Les données du produit sont incomplètes !");
+        qDebug() << "=== DEBUG: SMS Button Click Handler END (incomplete data) ===";
         return;
     }
 
-   /* QString nom = ui->tableWidgetstock->item(row, 1)->text();         // nom
-    QString reference = ui->tableWidgetstock->item(row, 0)->text();   // référence
-    QString quantite = ui->tableWidgetstock->item(row, 5)->text();    // quantité
+    // Extract text from items
+    QString nom = itemNom->text();
+    QString reference = itemRef->text();
+    QString quantite = itemQuantite->text();
 
+    qDebug() << "DEBUG: Product data - Nom:" << nom
+             << "Reference:" << reference
+             << "Quantite:" << quantite;
+
+    // Create message
     QString message =
         "Bonjour,\n\n"
         "Le produit '" + nom + "' (Référence: " + reference + ") "
@@ -2720,40 +3050,105 @@ void MainWindow::on_pushButton_sms_clicked(){
                      "Cordialement,\n"
                      "Votre système de gestion";
 
+    qDebug() << "DEBUG: SMS Message prepared";
+    qDebug() << "DEBUG: Message content:\n" << message;
+    qDebug() << "DEBUG: Sending SMS to +21693319949";
+
+    // Send SMS
     sendSMSTwilio("+21693319949", message);
 
-
-*/
-}/*
+    qDebug() << "=== DEBUG: SMS Button Click Handler END ===";
+}
 void MainWindow::sendSMSTwilio(const QString &to, const QString &message)
 {
-    // PUT YOUR REAL TWILIO INFO HERE
-                      // Your Twilio number
+    qDebug() << "=== DEBUG: sendSMSTwilio SAFE VERSION START ===";
 
-    // Twilio API URL
-    QString urlStr = "https://api.twilio.com/2010-04-01/Accounts/" + accountSID + "/Messages.json";
-    QUrl url(urlStr);
+    // ALWAYS create a fresh local network manager
+    QNetworkAccessManager *localManager = new QNetworkAccessManager(this);
+    qDebug() << "DEBUG: Created fresh QNetworkAccessManager at:" << (void*)localManager;
+
+    QString accountSid = "AC98d069a590fa23f0973b303e53ff6788";
+    QString authToken = "a9b32e16a833c0d61562caccb6b456ae";
+    QString fromNumber = "+12132778055";
+
+    QUrl url("https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json");
+    qDebug() << "DEBUG: URL:" << url.toString();
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-    // Body data
-    QUrlQuery postData;
-    postData.addQueryItem("To", to);
-    postData.addQueryItem("From", fromNumber);
-    postData.addQueryItem("Body", message);
+    QUrlQuery params;
+    params.addQueryItem("To", to);
+    params.addQueryItem("From", fromNumber);
+    params.addQueryItem("Body", message);
 
-    QByteArray data = postData.toString(QUrl::FullyEncoded).toUtf8();
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+    qDebug() << "DEBUG: Data length:" << data.length() << "bytes";
 
-    // Basic Authentication → accountSID:authToken
-    QString credentials = accountSID + ":" + authToken;
-    QByteArray authHeader = "Basic " + credentials.toUtf8().toBase64();
-    request.setRawHeader("Authorization", authHeader);
+    QString credentials = accountSid + ":" + authToken;
+    QByteArray authData = "Basic " + credentials.toUtf8().toBase64();
+    request.setRawHeader("Authorization", authData);
 
-    // Send POST
-    networkManager->post(request, data);
-}*/
+    qDebug() << "DEBUG: Attempting POST request...";
 
+    // Use QEventLoop to wait synchronously (simpler for debugging)
+    QEventLoop loop;
+    QNetworkReply *reply = nullptr;
+
+    try {
+        reply = localManager->post(request, data);
+        qDebug() << "DEBUG: Reply object created at:" << (void*)reply;
+
+        if (!reply) {
+            qDebug() << "ERROR: Reply is null!";
+            QMessageBox::critical(this, "Erreur", "Échec de création de la requête réseau");
+            delete localManager;
+            return;
+        }
+
+        // Connect reply to event loop
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+
+        // Also handle errors
+        QObject::connect(reply, &QNetworkReply::errorOccurred, [](QNetworkReply::NetworkError error) {
+            qDebug() << "Network error occurred:" << error;
+        });
+
+        qDebug() << "DEBUG: Starting event loop...";
+        loop.exec();  // Wait for request to complete
+        qDebug() << "DEBUG: Event loop finished";
+
+    } catch (const std::exception &e) {
+        qDebug() << "EXCEPTION caught:" << e.what();
+        QMessageBox::critical(this, "Exception", QString("Exception: %1").arg(e.what()));
+        if (reply) reply->deleteLater();
+        delete localManager;
+        return;
+    } catch (...) {
+        qDebug() << "UNKNOWN EXCEPTION caught!";
+        QMessageBox::critical(this, "Exception", "Unknown exception occurred");
+        if (reply) reply->deleteLater();
+        delete localManager;
+        return;
+    }
+
+    // Check result
+    if (reply && reply->error() == QNetworkReply::NoError) {
+        QByteArray response = reply->readAll();
+        qDebug() << "SUCCESS! Response:" << response;
+        QMessageBox::information(this, "Succès", "SMS envoyé avec succès!");
+    } else if (reply) {
+        QString errorStr = reply->errorString();
+        qDebug() << "ERROR:" << errorStr;
+        QMessageBox::critical(this, "Erreur", "Échec d'envoi SMS:\n" + errorStr);
+    }
+
+    // Cleanup
+    if (reply) reply->deleteLater();
+    delete localManager;
+
+    qDebug() << "=== DEBUG: sendSMSTwilio SAFE VERSION END ===";
+}
 /////stat vente
 void MainWindow::on_btnpage2vente_clicked()
 {

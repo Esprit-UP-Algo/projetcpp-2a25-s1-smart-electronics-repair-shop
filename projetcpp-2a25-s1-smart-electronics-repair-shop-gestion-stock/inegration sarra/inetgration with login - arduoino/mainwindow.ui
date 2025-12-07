@@ -3491,8 +3491,27 @@ color: rgb(255, 255, 255)</string>
            <height>29</height>
           </rect>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    background-color: #10b981;   /* normal state */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #059669;   /* darker on hover */
+}
+</string>
+         </property>
          <property name="text">
-          <string>test</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset theme="QIcon::ThemeIcon::ListAdd"/>
          </property>
         </widget>
         <zorder>label_102</zorder>
@@ -4214,6 +4233,11 @@ QHeaderView::section {
         <column>
          <property name="text">
           <string>etatproduit</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>intervention</string>
          </property>
         </column>
        </widget>
@@ -5824,6 +5848,21 @@ background-color: rgb(41, 102, 148);}</string>
           <width>90</width>
           <height>29</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #10b981;   /* normal state */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #059669;   /* darker on hover */
+}</string>
         </property>
         <property name="text">
          <string>age</string>

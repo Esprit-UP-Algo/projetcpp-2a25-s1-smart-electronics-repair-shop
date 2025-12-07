@@ -618,82 +618,64 @@ void Contenir::updateQuantiteMax(const QString &reference, QSpinBox *spinBox)
 
 void Contenir::addRow()
 {
+    // Main container widget for the row
     QWidget *rowWidget = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(rowWidget);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(5, 0, 5, 0);
+    layout->setSpacing(10);
 
+    // ───────────────────────────────────────────────
+    // 1) COMBOBOX – Product Reference (editable + search)
+    // ───────────────────────────────────────────────
     QComboBox *comboRef = new QComboBox(this);
     comboRef->setEditable(true);
-    comboRef->setInsertPolicy(QComboBox::NoInsert);
+    comboRef->lineEdit()->setPlaceholderText("Référence...");
+    comboRef->addItems(produitsList);  // Your vector/list of references
 
-    QString placeholder = "RefProduit";
-    comboRef->lineEdit()->setPlaceholderText(placeholder);
-
-    QStringList allProducts = produitsList;
-
+    // Live search / autocomplete
     connect(comboRef->lineEdit(), &QLineEdit::textEdited, this, [=](const QString &text) {
         comboRef->clear();
 
-        if (text.isEmpty()) {
-            comboRef->addItems(allProducts);
-        } else {
-            for (const QString &ref : allProducts) {
-                if (ref.startsWith(text, Qt::CaseInsensitive))
-                    comboRef->addItem(ref);
+        for (const QString &ref : produitsList) {
+            if (ref.contains(text, Qt::CaseInsensitive)) {
+                comboRef->addItem(ref);
             }
         }
 
-        if (comboRef->count() == 0) {
+        // Allow manual entry
+        if (comboRef->count() == 0)
             comboRef->addItem(text);
-        }
-
-        comboRef->setEditText(text);
-        comboRef->lineEdit()->setCursorPosition(text.length());
     });
 
+    layout->addWidget(comboRef, 2);
+
+    // ───────────────────────────────────────────────
+    // 2) SPINBOX – Quantity
+    // ───────────────────────────────────────────────
     QSpinBox *spinQuantite = new QSpinBox(this);
-    spinQuantite->setRange(0, 9999);
-    spinQuantite->setValue(0);
-    spinQuantite->setToolTip("Select a product reference first");
+    spinQuantite->setMinimum(1);
+    spinQuantite->setMaximum(9999);
+    spinQuantite->setValue(1);
 
-    QPushButton *btnDeleteRow = new QPushButton("×", this);
-    btnDeleteRow->setFixedSize(25, 25);
-    btnDeleteRow->setStyleSheet(
-        "QPushButton {"
-        "    background-color: #dc3545;"
-        "    color: white;"
-        "    border: none;"
-        "    border-radius: 3px;"
-        "    font-weight: bold;"
-        "}"
-        "QPushButton:hover {"
-        "    background-color: #c82333;"
-        "}"
-        "QPushButton:pressed {"
-        "    background-color: #bd2130;"
-        "}"
-        );
-    btnDeleteRow->setToolTip("Delete this row");
-    btnDeleteRow->setAutoDefault(false);  // FIX: Prevent closing dialog
-    btnDeleteRow->setDefault(false);      // FIX: Prevent closing dialog
+    layout->addWidget(spinQuantite, 1);
 
-    btnDeleteRow->setProperty("rowWidget", QVariant::fromValue(rowWidget));
-
-    connect(comboRef, &QComboBox::currentTextChanged, this, [=](const QString &reference) {
-        this->updateQuantiteMax(reference, spinQuantite);
+    // Update quantity max when reference changes
+    connect(comboRef, &QComboBox::currentTextChanged, this, [=]() {
+        QString ref = comboRef->currentText().trimmed();
+        updateQuantiteMax(ref, spinQuantite);
     });
 
-    connect(spinQuantite, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &Contenir::validateQuantite);
+    // Keep quantity within the updated limit
+    connect(spinQuantite, qOverload<int>(&QSpinBox::valueChanged), this, [=](int) {
+        QString ref = comboRef->currentText().trimmed();
+        updateQuantiteMax(ref, spinQuantite);
+    });
 
-    connect(btnDeleteRow, &QPushButton::clicked, this, &Contenir::removeRowByButton);
-
-    layout->addWidget(comboRef);
-    layout->addWidget(spinQuantite);
-    layout->addWidget(btnDeleteRow);
-
+    // ───────────────────────────────────────────────
+    // 3) ADD THE ROW TO QListWidget
+    // ───────────────────────────────────────────────
     QListWidgetItem *item = new QListWidgetItem(listWidget);
-    item->setSizeHint(rowWidget->sizeHint());
+    item->setSizeHint(QSize(0, 40));
     listWidget->addItem(item);
     listWidget->setItemWidget(item, rowWidget);
 }

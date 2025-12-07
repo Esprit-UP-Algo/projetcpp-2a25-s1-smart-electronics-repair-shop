@@ -85,6 +85,9 @@ private slots:
     void animateFinancialLabel(QLabel* label, double value, const QString& marque);
     void on_pushButton_sms_clicked();
     void sendSMSTwilio(const QString &to, const QString &message);
+    void on_tableWidgetfour_cellClicked(int row, int column);
+    void on_pushButton_28_clicked();
+    void on_btnpage2four_clicked();
 
 protected :
     void closeEvent(QCloseEvent *event) override;
