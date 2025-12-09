@@ -83,6 +83,7 @@ public:
     QLabel *image_3;
     QLabel *label_3;
     QPushButton *nettoyage;
+    QLineEdit *avis;
     QWidget *page_8;
     QLabel *labelclientsexe;
     QLabel *label_40;
@@ -1068,6 +1069,23 @@ public:
 ""));
         QIcon icon6(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaylistRepeat));
         nettoyage->setIcon(icon6);
+        avis = new QLineEdit(page_7);
+        avis->setObjectName("avis");
+        avis->setGeometry(QRect(370, 70, 171, 41));
+        avis->setStyleSheet(QString::fromUtf8("QLineEdit {\n"
+"    /* dark background */\n"
+"	background-color: rgb(255, 255, 255);\n"
+"    color: #1f2937;              /* typed text color */\n"
+"    border: 2px solid #3b82f6;   /* blue border */\n"
+"    border-radius: 8px;\n"
+"   \n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"QLineEdit::placeholder {\n"
+"    color: white;                /* placeholder text color */\n"
+"}\n"
+""));
         stackedWidgetclient->addWidget(page_7);
         label_31->raise();
         pushButton_filtrer_3->raise();
@@ -1082,6 +1100,7 @@ public:
         image_3->raise();
         label_3->raise();
         nettoyage->raise();
+        avis->raise();
         page_8 = new QWidget();
         page_8->setObjectName("page_8");
         labelclientsexe = new QLabel(page_8);
