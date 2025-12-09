@@ -5,6 +5,7 @@
 #include <QSqlRecord>
 #include <QTimer>
 #include <QRegularExpression>
+#include <QThread> // ADDED for QThread::msleep
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
@@ -30,13 +31,8 @@ LoginDialog::LoginDialog(QWidget *parent) :
     connect(ui->pushButtonBack, &QPushButton::clicked, this, &LoginDialog::on_pushButtonBack_clicked);
 
     // Setup Arduino for card reading
-    QTimer::singleShot(1000, this, [this]() {
-        if (setupArduino()) {
-            qDebug() << "RFID Card Reader: Connected successfully";
-            startCardScanning();
-        } else {
-            qDebug() << "RFID Card Reader: Not connected - manual login only";
-        }
+    QTimer::singleShot(500, this, [this]() {
+        reconnectArduino(); // CHANGED from setupArduino
     });
 
     // Set focus to employee ID field
@@ -45,15 +41,42 @@ LoginDialog::LoginDialog(QWidget *parent) :
 
 LoginDialog::~LoginDialog()
 {
-    stopCardScanning();
-    if (cardCheckTimer) {
-        delete cardCheckTimer;
+    // Stop the timer first
+    if (cardCheckTimer && cardCheckTimer->isActive()) {
+        cardCheckTimer->stop();
     }
+
+    // Stop scanning
+    cardScanningActive = false;
+
+    // Send a reset command to Arduino before closing
+    if (arduino.getserial() && arduino.getserial()->isOpen()) {
+        arduino.write_to_arduino(QByteArray("RESET\n"));
+        QThread::msleep(100);
+        arduino.close_arduino();
+    }
+
     delete ui;
 }
 
-// REMOVED: UserInfo LoginDialog::getCurrentUser() const
-// Now implemented inline in header file
+void LoginDialog::reconnectArduino()
+{
+    // Close any existing connection first
+    if (arduino.getserial() && arduino.getserial()->isOpen()) {
+        arduino.close_arduino();
+    }
+
+    // Clear any pending data
+    QThread::msleep(500);
+
+    // Try to reconnect
+    if (setupArduino()) {
+        qDebug() << "RFID Card Reader: Reconnected successfully";
+        startCardScanning();
+    } else {
+        qDebug() << "RFID Card Reader: Reconnection failed - manual login only";
+    }
+}
 
 bool LoginDialog::setupArduino()
 {

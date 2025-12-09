@@ -71,6 +71,8 @@ private slots:
     void on_pushButton_9_clicked();
     void genererAttestationTravail(int idEmploye);
     void on_agestatemp_clicked();
+    //
+
     void on_pushButtonLogout_clicked();
     void on_pushButton_5_clicked();
     void on_pushButton_7_clicked();

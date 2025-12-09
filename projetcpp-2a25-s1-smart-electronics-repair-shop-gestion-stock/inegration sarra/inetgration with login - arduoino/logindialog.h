@@ -67,7 +67,7 @@ private:
     bool setupArduino();
     void stopCardScanning();
     void startCardScanning();
-    void reconnectArduino();
+    void reconnectArduino(); // ADDED
 };
 
 #endif // LOGINDIALOG_H

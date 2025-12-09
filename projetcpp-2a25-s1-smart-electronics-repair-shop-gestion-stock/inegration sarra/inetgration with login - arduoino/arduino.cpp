@@ -13,6 +13,8 @@ Arduino::~Arduino()
 {
     if (serial) {
         if (serial->isOpen()) {
+            // In destructor, we don't send reset because it might be too late
+            // Just close the port
             serial->close();
         }
         delete serial;
@@ -30,18 +32,29 @@ int Arduino::connect_arduino()
         serial->setDataTerminalReady(false);
         serial->setRequestToSend(false);
         serial->close();
-        QThread::msleep(100);
+        QThread::msleep(500);  // Increased delay for better cleanup
     }
 
-    foreach (const QSerialPortInfo &serial_port_info, QSerialPortInfo::availablePorts()) {
-        if (serial_port_info.hasVendorIdentifier() && serial_port_info.hasProductIdentifier()) {
-            if (serial_port_info.vendorIdentifier() == arduino_uno_vendor_id &&
-                serial_port_info.productIdentifier() == arduino_uno_producy_id) {
-                arduino_is_available = true;
-                arduino_port_name = serial_port_info.portName();
-                break;
+    // Try multiple times to find Arduino
+    int maxRetries = 3;
+    for (int retry = 0; retry < maxRetries; retry++) {
+        foreach (const QSerialPortInfo &serial_port_info, QSerialPortInfo::availablePorts()) {
+            qDebug() << "Found port:" << serial_port_info.portName()
+            << "VID:" << serial_port_info.vendorIdentifier()
+            << "PID:" << serial_port_info.productIdentifier();
+
+            if (serial_port_info.hasVendorIdentifier() && serial_port_info.hasProductIdentifier()) {
+                if (serial_port_info.vendorIdentifier() == arduino_uno_vendor_id &&
+                    serial_port_info.productIdentifier() == arduino_uno_producy_id) {
+                    arduino_is_available = true;
+                    arduino_port_name = serial_port_info.portName();
+                    break;
+                }
             }
         }
+
+        if (arduino_is_available) break;
+        QThread::msleep(200);  // Wait before retry
     }
 
     qDebug() << "Arduino port name is:" << arduino_port_name;
@@ -63,8 +76,11 @@ int Arduino::connect_arduino()
             serial->clear();
             serial->flush();
 
-            // Shorter wait time
-            QThread::msleep(500);
+            // Wait for Arduino to initialize
+            QThread::msleep(1000);  // Increased wait time for Arduino boot
+
+            // Clear any pending data
+            serial->readAll();
 
             qDebug() << "Serial port opened (DTR/RTS disabled)";
             return 0;
@@ -73,19 +89,27 @@ int Arduino::connect_arduino()
             return 1;
         }
     }
+    qDebug() << "Arduino not found after" << maxRetries << "retries";
     return -1;
 }
 
 int Arduino::close_arduino()
 {
     if (serial && serial->isOpen()) {
+        // Send a reset command to Arduino first
+        if (serial->isWritable()) {
+            serial->write("RESET\n");
+            serial->flush();
+            QThread::msleep(100);
+        }
+
         // Don't trigger reset on close
         serial->setDataTerminalReady(false);
         serial->setRequestToSend(false);
         serial->flush();
         QThread::msleep(50);
         serial->close();
-        qDebug() << "Connection closed (no reset)";
+        qDebug() << "Connection closed (with reset command)";
         return 0;
     }
     return 1;

@@ -16,6 +16,7 @@ public:
     QByteArray read_from_arduino();
     QSerialPort* getserial() { return serial; }
     QString getarduino_port_name() { return arduino_port_name; }
+    bool isConnected() { return (serial && serial->isOpen()); } // ADDED
 
 private:
     QSerialPort *serial;
