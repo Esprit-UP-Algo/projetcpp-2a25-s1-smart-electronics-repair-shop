@@ -2,12 +2,16 @@
 #include "ui_logindialog.h"
 #include <QCryptographicHash>
 #include <QDebug>
-#include <QSqlRecord>  // Add this include
+#include <QSqlRecord>
+#include <QTimer>
+#include <QRegularExpression>
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LoginDialog),
-    authenticated(false)
+    authenticated(false),
+    cardScanningActive(false),
+    cardCheckTimer(nullptr)
 {
     ui->setupUi(this);
 
@@ -17,6 +21,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     currentUser.prenom = "";
     currentUser.poste = "";
     currentUser.email = "";
+    currentUser.card_uid = "";
 
     // Connect signals and slots
     connect(ui->pushButtonLogin, &QPushButton::clicked, this, &LoginDialog::on_pushButtonLogin_clicked);
@@ -24,18 +29,292 @@ LoginDialog::LoginDialog(QWidget *parent) :
     connect(ui->pushButtonReset, &QPushButton::clicked, this, &LoginDialog::on_pushButtonReset_clicked);
     connect(ui->pushButtonBack, &QPushButton::clicked, this, &LoginDialog::on_pushButtonBack_clicked);
 
+    // Setup Arduino for card reading
+    QTimer::singleShot(1000, this, [this]() {
+        if (setupArduino()) {
+            qDebug() << "RFID Card Reader: Connected successfully";
+            startCardScanning();
+        } else {
+            qDebug() << "RFID Card Reader: Not connected - manual login only";
+        }
+    });
+
     // Set focus to employee ID field
     ui->lineEditID->setFocus();
 }
 
 LoginDialog::~LoginDialog()
 {
+    stopCardScanning();
+    if (cardCheckTimer) {
+        delete cardCheckTimer;
+    }
     delete ui;
 }
 
-UserInfo LoginDialog::getCurrentUser() const
+// REMOVED: UserInfo LoginDialog::getCurrentUser() const
+// Now implemented inline in header file
+
+bool LoginDialog::setupArduino()
 {
-    return currentUser;
+    int connectionResult = arduino.connect_arduino();
+    if (connectionResult == 0) {
+        qDebug() << "RFID Card Reader: Connected on port" << arduino.getarduino_port_name();
+        return true;
+    } else {
+        qDebug() << "RFID Card Reader: Connection failed (code" << connectionResult << ")";
+        return false;
+    }
+}
+
+void LoginDialog::startCardScanning()
+{
+    if (!cardCheckTimer) {
+        cardCheckTimer = new QTimer(this);
+        connect(cardCheckTimer, &QTimer::timeout, this, &LoginDialog::checkForCard);
+    }
+
+    cardScanningActive = true;
+
+    if (!cardCheckTimer->isActive()) {
+        cardCheckTimer->start(300);
+        qDebug() << "✓ Card scanning started";
+    } else {
+        qDebug() << "✓ Card scanning already active";
+    }
+}
+
+void LoginDialog::stopCardScanning()
+{
+    if (cardScanningActive) {
+        cardScanningActive = false;
+        if (cardCheckTimer && cardCheckTimer->isActive()) {
+            cardCheckTimer->stop();
+        }
+        qDebug() << "✓ Card scanning stopped";
+    }
+}
+
+void LoginDialog::checkForCard()
+{
+    if (!cardScanningActive) {
+        return;
+    }
+
+    QByteArray cardData = arduino.read_from_arduino();
+
+    if (!cardData.isEmpty()) {
+        QString cardUid = QString::fromUtf8(cardData).trimmed();
+
+        // Filter out system messages
+        if (cardUid == "READY" || cardUid == "HEARTBEAT" ||
+            cardUid == "DOOR_OPENED" || cardUid == "DOOR_CLOSED" ||
+            cardUid == "PONG" || cardUid == "READER_RESET" ||
+            cardUid.contains("DOOR:")) {
+            return;
+        }
+
+        cardUid.replace("\r", "");
+        cardUid.replace("\n", "");
+        cardUid.replace("\t", "");
+        cardUid.replace(" ", "");
+
+        if (cardUid.length() >= 4 && cardUid.length() <= 20) {
+            bool isValidHex = true;
+            for (int i = 0; i < cardUid.length(); i++) {
+                QChar c = cardUid.at(i).toUpper();
+                if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F'))) {
+                    isValidHex = false;
+                    break;
+                }
+            }
+
+            if (isValidHex) {
+                qDebug() << "=== VALID CARD DETECTED ===" << cardUid;
+
+                // DON'T stop scanning here - let loginWithCard decide
+                // stopCardScanning();
+
+                if (!loginWithCard(cardUid)) {
+                    // If login failed, wait a bit before accepting next card
+                    // to prevent spam if user holds card there
+                    qDebug() << "Login failed, waiting before next scan...";
+                    cardScanningActive = false;
+                    QTimer::singleShot(2000, this, [this]() {
+                        cardScanningActive = true;
+                        qDebug() << "Ready for next card scan";
+                    });
+                }
+                // If login succeeded, scanning is already stopped in loginWithCard
+            }
+        }
+    }
+}
+bool LoginDialog::loginWithCard(QString cardUid)
+{
+    if (cardUid.isEmpty() || cardUid.length() < 4) {
+        return false;
+    }
+
+    cardUid = cardUid.trimmed().toUpper();
+
+    qDebug() << "Checking authorization for Card:" << cardUid;
+
+    QSqlQuery query;
+    query.prepare("SELECT ID, NOM, PRENOM, POST, ADRESSE, PWD, CARD_UID "
+                  "FROM EMPLOYES WHERE CARD_UID = :card_uid");
+    query.bindValue(":card_uid", cardUid);
+
+    if (!query.exec()) {
+        arduino.write_to_arduino(QByteArray("ACCESS_DENIED\n"));
+        QMessageBox::critical(this, "Database Error", query.lastError().text());
+
+        // Resume scanning after error
+        startCardScanning();
+        return false;
+    }
+
+    if (query.next()) {
+        // ✅ AUTHORIZED
+        currentUser.id = query.value("ID").toInt();
+        currentUser.nom = query.value("NOM").toString().trimmed();
+        currentUser.prenom = query.value("PRENOM").toString().trimmed();
+        currentUser.poste = query.value("POST").toString().trimmed();
+        currentUser.email = query.value("ADRESSE").toString().trimmed();
+        currentUser.card_uid = query.value("CARD_UID").toString().trimmed();
+
+        authenticated = true;
+
+        qDebug() << "=== ✅ ACCESS GRANTED ===" << currentUser.prenom << currentUser.nom;
+
+        // Send door open command
+        arduino.write_to_arduino(QByteArray("ACCESS_GRANTED\n"));
+
+        ui->lineEditID->setText(QString::number(currentUser.id));
+
+        // Stop scanning only on successful login
+        stopCardScanning();
+
+        QMessageBox::information(this, "✓ Access Granted",
+                                 QString("Welcome %1 %2!\n\n🔓 Door opening...")
+                                     .arg(currentUser.prenom)
+                                     .arg(currentUser.nom));
+
+        QTimer::singleShot(100, this, [this]() {
+            this->accept();
+        });
+
+        return true;
+    }
+    else {
+        // ❌ NOT AUTHORIZED
+        qDebug() << "=== ❌ ACCESS DENIED ===";
+        arduino.write_to_arduino(QByteArray("ACCESS_DENIED\n"));
+
+        QMessageBox::warning(this, "✗ Access Denied",
+                             QString("Card: %1\n\n🔒 Not authorized")
+                                 .arg(cardUid));
+
+        // IMPORTANT: Keep scanning for next card
+        // Don't stop scanning on failed login
+        return false;
+    }
+}
+
+// Helper function to log card access attempts (add this to your class)
+void LoginDialog::logCardAccess(int employeeId, QString cardUid, bool success)
+{
+    QSqlQuery logQuery;
+
+    // Create a log table if it doesn't exist (run this once in your database setup)
+    /*
+    CREATE TABLE CARD_ACCESS_LOG (
+        LOG_ID NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        EMPLOYEE_ID NUMBER,
+        CARD_UID VARCHAR2(50),
+        ACCESS_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        SUCCESS CHAR(1),
+        IP_ADDRESS VARCHAR2(50)
+    );
+    */
+
+    logQuery.prepare("INSERT INTO CARD_ACCESS_LOG (EMPLOYEE_ID, CARD_UID, SUCCESS, ACCESS_TIME) "
+                     "VALUES (:emp_id, :card_uid, :success, CURRENT_TIMESTAMP)");
+
+    logQuery.bindValue(":emp_id", employeeId > 0 ? employeeId : QVariant(QVariant::Int));
+    logQuery.bindValue(":card_uid", cardUid);
+    logQuery.bindValue(":success", success ? "Y" : "N");
+
+    if (!logQuery.exec()) {
+        qDebug() << "Failed to log card access:" << logQuery.lastError().text();
+        // Don't show error to user - logging failure shouldn't prevent login
+    } else {
+        qDebug() << "Card access logged successfully";
+    }
+}
+
+// Optional: Add function to check if card exists and get employee name (without logging in)
+bool LoginDialog::checkCardExists(QString cardUid, QString& employeeName)
+{
+    cardUid = cardUid.trimmed().toUpper();
+
+    QSqlQuery query;
+    query.prepare("SELECT ID, NOM, PRENOM FROM EMPLOYES WHERE CARD_UID = :card_uid");
+    query.bindValue(":card_uid", cardUid);
+
+    if (query.exec() && query.next()) {
+        employeeName = QString("%1 %2")
+        .arg(query.value("PRENOM").toString())
+            .arg(query.value("NOM").toString());
+        return true;
+    }
+
+    return false;
+}
+
+// Optional: Function to register a new card for an employee
+bool LoginDialog::registerCardForEmployee(int employeeId, QString cardUid)
+{
+    // Validate inputs
+    if (employeeId <= 0 || cardUid.isEmpty()) {
+        return false;
+    }
+
+    cardUid = cardUid.trimmed().toUpper();
+
+    // Check if card is already assigned
+    QSqlQuery checkQuery;
+    checkQuery.prepare("SELECT ID, NOM, PRENOM FROM EMPLOYES WHERE CARD_UID = :card_uid");
+    checkQuery.bindValue(":card_uid", cardUid);
+
+    if (checkQuery.exec() && checkQuery.next()) {
+        int existingId = checkQuery.value("ID").toInt();
+        if (existingId != employeeId) {
+            QString existingName = QString("%1 %2")
+            .arg(checkQuery.value("PRENOM").toString())
+                .arg(checkQuery.value("NOM").toString());
+
+            QMessageBox::warning(this, "Card Already Registered",
+                                 QString("This card is already assigned to:\n%1 (ID: %2)")
+                                     .arg(existingName)
+                                     .arg(existingId));
+            return false;
+        }
+    }
+
+    // Register the card
+    QSqlQuery updateQuery;
+    updateQuery.prepare("UPDATE EMPLOYES SET CARD_UID = :card_uid WHERE ID = :id");
+    updateQuery.bindValue(":card_uid", cardUid);
+    updateQuery.bindValue(":id", employeeId);
+
+    if (updateQuery.exec()) {
+        qDebug() << "Card registered successfully for employee ID:" << employeeId;
+        return true;
+    } else {
+        qDebug() << "Failed to register card:" << updateQuery.lastError().text();
+        return false;
+    }
 }
 
 QString LoginDialog::hashPassword(const QString &password)
@@ -46,32 +325,11 @@ QString LoginDialog::hashPassword(const QString &password)
 bool LoginDialog::verifyUser(const QString &employeeId, const QString &password)
 {
     QSqlQuery query;
-
-    qDebug() << "=== LOGIN ATTEMPT ===";
-    qDebug() << "ID:" << employeeId << "Password:" << password;
-
-    // First, let's check what employees exist and their passwords
-    QSqlQuery debugQuery("SELECT ID, NOM, PRENOM, POST, PWD FROM EMPLOYES");
-    qDebug() << "=== DATABASE CONTENTS ===";
-    while (debugQuery.next()) {
-        qDebug() << "ID:" << debugQuery.value("ID").toInt()
-        << "Name:" << debugQuery.value("NOM").toString()
-        << debugQuery.value("PRENOM").toString()
-        << "Post:" << debugQuery.value("POST").toString()
-        << "PWD:" << debugQuery.value("PWD").toString();
-    }
-
-    // Try different query approaches
-    bool success = false;
-
-    // Approach 1: Check if user exists first
-    query.prepare("SELECT ID, NOM, PRENOM, POST, ADRESSE, PWD FROM EMPLOYES WHERE ID = ?");
-    query.addBindValue(employeeId.toInt());
+    query.prepare("SELECT ID, NOM, PRENOM, POST, ADRESSE, PWD, CARD_UID FROM EMPLOYES WHERE ID = :id");
+    query.bindValue(":id", employeeId.toInt());
 
     if (query.exec() && query.next()) {
         QString storedPassword = query.value("PWD").toString();
-        qDebug() << "Found user - Stored PWD:" << storedPassword;
-        qDebug() << "Password comparison:" << (password == storedPassword);
 
         if (password == storedPassword) {
             currentUser.id = query.value("ID").toInt();
@@ -79,135 +337,79 @@ bool LoginDialog::verifyUser(const QString &employeeId, const QString &password)
             currentUser.prenom = query.value("PRENOM").toString().trimmed();
             currentUser.poste = query.value("POST").toString().trimmed();
             currentUser.email = query.value("ADRESSE").toString().trimmed();
-            success = true;
+            currentUser.card_uid = query.value("CARD_UID").toString().trimmed();
+            return true;
         }
-    } else {
-        qDebug() << "User not found with ID:" << employeeId;
     }
 
-    qDebug() << "Login result:" << (success ? "SUCCESS" : "FAILED");
-    return success;
+    return false;
 }
 
 bool LoginDialog::resetPassword(const QString &employeeId, const QString &securityAnswer,
                                 const QString &newPassword)
 {
-    qDebug() << "=== RESET PASSWORD DEBUG ===";
-    qDebug() << "Employee ID:" << employeeId;
-    qDebug() << "Security Answer:" << securityAnswer;
-    qDebug() << "New Password:" << newPassword;
-
-    // Validate inputs
     if (employeeId.isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez entrer un ID employé.");
+        QMessageBox::warning(this, "Error", "Please enter Employee ID.");
         return false;
     }
 
     if (newPassword.length() < 4) {
-        QMessageBox::warning(this, "Erreur", "Le mot de passe doit contenir au moins 4 caractères.");
+        QMessageBox::warning(this, "Error", "Password must be at least 4 characters.");
         return false;
     }
 
-    // First, check if employee exists
     QSqlQuery checkQuery;
-    checkQuery.prepare("SELECT ID, NOM, PRENOM, ADRESSE, SALAIRE FROM EMPLOYES WHERE ID = ?");
-    checkQuery.addBindValue(employeeId.toInt());
+    checkQuery.prepare("SELECT ID, NOM, PRENOM, ADRESSE, SALAIRE FROM EMPLOYES WHERE ID = :id");
+    checkQuery.bindValue(":id", employeeId.toInt());
 
     if (!checkQuery.exec()) {
-        qDebug() << "Query error:" << checkQuery.lastError().text();
-        QMessageBox::warning(this, "Erreur", "Erreur de base de données.");
+        QMessageBox::warning(this, "Error", "Database error.");
         return false;
     }
 
     if (checkQuery.next()) {
-        // Employee exists
         QString nom = checkQuery.value("NOM").toString();
         QString prenom = checkQuery.value("PRENOM").toString();
         QString expectedAdresse = checkQuery.value("ADRESSE").toString().trimmed();
         double expectedSalaire = checkQuery.value("SALAIRE").toDouble();
         QString expectedAnswer = QString("%1 = %2").arg(expectedAdresse).arg(expectedSalaire, 0, 'f', 1);
 
-        qDebug() << "Employee found:" << nom << prenom;
-        qDebug() << "Security verification:";
-        qDebug() << "  Expected answer:" << expectedAnswer;
-        qDebug() << "  User answer:" << securityAnswer;
-        qDebug() << "  Match:" << (securityAnswer == expectedAnswer);
-
         if (securityAnswer == expectedAnswer) {
-            // Update password
             QSqlQuery updateQuery;
-            updateQuery.prepare("UPDATE EMPLOYES SET PWD = ? WHERE ID = ?");
-            updateQuery.addBindValue(newPassword);
-            updateQuery.addBindValue(employeeId.toInt());
+            updateQuery.prepare("UPDATE EMPLOYES SET PWD = :pwd WHERE ID = :id");
+            updateQuery.bindValue(":pwd", newPassword);
+            updateQuery.bindValue(":id", employeeId.toInt());
 
             if (updateQuery.exec()) {
-                qDebug() << "Password updated successfully for employee ID:" << employeeId;
-                QMessageBox::information(this, "Succès",
-                                         QString("Mot de passe réinitialisé avec succès pour %1 %2!")
+                QMessageBox::information(this, "Success",
+                                         QString("Password reset successfully for %1 %2!")
                                              .arg(prenom)
                                              .arg(nom));
                 return true;
             } else {
-                qDebug() << "Update error:" << updateQuery.lastError().text();
-                QMessageBox::warning(this, "Erreur", "Erreur lors de la mise à jour du mot de passe.");
+                QMessageBox::warning(this, "Error", "Error updating password.");
             }
         }
-    } else {
-        qDebug() << "No employee found with ID:" << employeeId;
-
-        // Show available IDs for help
-        QSqlQuery idQuery("SELECT ID FROM EMPLOYES ORDER BY ID");
-        QString availableIds;
-        while (idQuery.next()) {
-            availableIds += idQuery.value("ID").toString() + ", ";
-        }
-
-        QMessageBox::warning(this, "Erreur",
-                             QString("Aucun employé trouvé avec l'ID: %1\n\nIDs disponibles: %2")
-                                 .arg(employeeId)
-                                 .arg(availableIds));
     }
 
     return false;
 }
-
-
 
 void LoginDialog::on_pushButtonLogin_clicked()
 {
     QString employeeId = ui->lineEditID->text().trimmed();
     QString password = ui->lineEditPassword->text();
 
-    qDebug() << "=== LOGIN BUTTON CLICKED ===";
-    qDebug() << "Input - ID:" << employeeId << "Password:" << password;
-
     if (employeeId.isEmpty() || password.isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs.");
+        QMessageBox::warning(this, "Error", "Please fill all fields.");
         return;
-    }
-
-    // Test with hardcoded values first
-    if (employeeId == "123" && password == "aymen") {
-        qDebug() << "Hardcoded test passed!";
     }
 
     if (verifyUser(employeeId, password)) {
         authenticated = true;
-        qDebug() << "=== LOGIN SUCCESSFUL ===";
-        qDebug() << "User:" << currentUser.prenom << currentUser.nom;
-        qDebug() << "Role:" << currentUser.poste;
         accept();
     } else {
-        QMessageBox::warning(this, "Erreur", "ID employé ou mot de passe incorrect.");
-
-        // Show available IDs
-        QSqlQuery idQuery("SELECT ID FROM EMPLOYES ORDER BY ID");
-        QString availableIds;
-        while (idQuery.next()) {
-            availableIds += idQuery.value("ID").toString() + ", ";
-        }
-        qDebug() << "Available employee IDs:" << availableIds;
-
+        QMessageBox::warning(this, "Error", "Invalid Employee ID or Password.");
         ui->lineEditPassword->clear();
         ui->lineEditPassword->setFocus();
     }
@@ -215,6 +417,7 @@ void LoginDialog::on_pushButtonLogin_clicked()
 
 void LoginDialog::on_pushButtonForgot_clicked()
 {
+    stopCardScanning();
     ui->loginGroup->setVisible(false);
     ui->forgotGroup->setVisible(true);
     ui->lineEditForgotID->setFocus();
@@ -226,13 +429,8 @@ void LoginDialog::on_pushButtonReset_clicked()
     QString securityAnswer = ui->lineEditSecurityAnswer->text().trimmed();
     QString newPassword = ui->lineEditNewPassword->text();
 
-    qDebug() << "=== RESET BUTTON CLICKED ===";
-    qDebug() << "Employee ID:" << employeeId;
-    qDebug() << "Security Answer:" << securityAnswer;
-    qDebug() << "New Password:" << newPassword;
-
     if (employeeId.isEmpty() || securityAnswer.isEmpty() || newPassword.isEmpty()) {
-        QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs.");
+        QMessageBox::warning(this, "Error", "Please fill all fields.");
         return;
     }
 
@@ -243,9 +441,14 @@ void LoginDialog::on_pushButtonReset_clicked()
 
 void LoginDialog::on_pushButtonBack_clicked()
 {
+    if (arduino.getserial() && arduino.getserial()->isOpen()) {
+        startCardScanning();
+    }
+
     ui->forgotGroup->setVisible(false);
     ui->loginGroup->setVisible(true);
     ui->lineEditSecurityAnswer->clear();
     ui->lineEditNewPassword->clear();
     ui->lineEditForgotID->clear();
 }
+

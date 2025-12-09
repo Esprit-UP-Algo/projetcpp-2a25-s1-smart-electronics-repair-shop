@@ -22,6 +22,7 @@ private:
     QString date_naissance;
     double salaire;
     QString pwd;
+    QString card_uid;  // ADDED for RFID card
 
 public:
     Employee();
@@ -40,6 +41,7 @@ public:
     QString getdatenaissance() const { return date_naissance; }
     double getsalaire() const { return salaire; }
     QString getpwd() const { return pwd; }
+    QString getcard_uid() const { return card_uid; }  // ADDED
 
     // Setters
     void setid(int id) { this->id = id; }
@@ -53,6 +55,7 @@ public:
     void setdatenaissance(QString date_naissance) { this->date_naissance = date_naissance; }
     void setsalaire(double salaire) { this->salaire = salaire; }
     void setpwd(QString pwd) { this->pwd = pwd; }
+    void setcard_uid(QString card_uid) { this->card_uid = card_uid; }  // ADDED
 
     // Methods
     void setsexe(Ui::MainWindow *ui);
@@ -62,10 +65,6 @@ public:
     void afficher(Ui::MainWindow *ui);
     bool rech(QString recherche, Ui::MainWindow *ui);
     Employee getEmployeeById(int id);
-
-
 };
-
-
 
 #endif // EMPLOYES_H

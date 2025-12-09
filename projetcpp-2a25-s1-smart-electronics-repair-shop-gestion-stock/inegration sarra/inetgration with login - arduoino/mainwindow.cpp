@@ -7,7 +7,7 @@
 
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
-
+#include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -2499,22 +2499,38 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::on_pushButton_5_clicked()
 {
-    qDebug() << "Logout button clicked!";
-
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Déconnexion",
-                                  "Êtes-vous sûr de vouloir vous déconnecter?",
+    reply = QMessageBox::question(this, "Logout",
+                                  "Are you sure you want to logout?",
                                   QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        qDebug() << "User confirmed logout";
+        qDebug() << "=== USER LOGGING OUT ===";
 
-        // Show logout confirmation
-
-
-        // Close the main window - this will trigger the application to return to login
+        // Close the main window first
         this->close();
+
+        // Small delay to ensure window closes cleanly
+        QThread::msleep(100);
+
+        // Create NEW login dialog
+        LoginDialog* loginDialog = new LoginDialog();
+
+        // Show the login dialog
+        if (loginDialog->exec() == QDialog::Accepted) {
+            // User logged in successfully, create new main window
+            qDebug() << "=== USER LOGGED IN AGAIN ===";
+            MainWindow* newMainWindow = new MainWindow();
+            newMainWindow->show();
+        } else {
+            // User closed login dialog, exit application
+            qDebug() << "=== USER CANCELLED LOGIN - EXITING ===";
+            QApplication::quit();
+        }
+
+        delete loginDialog;
     }
+
 }
 void MainWindow::on_pushButton_7_clicked()
 {

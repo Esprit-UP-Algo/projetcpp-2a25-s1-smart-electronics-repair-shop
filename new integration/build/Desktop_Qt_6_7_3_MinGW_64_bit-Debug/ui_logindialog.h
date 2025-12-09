@@ -53,7 +53,7 @@ public:
     {
         if (LoginDialog->objectName().isEmpty())
             LoginDialog->setObjectName("LoginDialog");
-        LoginDialog->resize(400, 450);
+        LoginDialog->resize(679, 450);
         LoginDialog->setStyleSheet(QString::fromUtf8("\n"
 "QDialog {\n"
 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
@@ -141,7 +141,7 @@ public:
         verticalLayout->setObjectName("verticalLayout");
         titleLabel = new QLabel(LoginDialog);
         titleLabel->setObjectName("titleLabel");
-        titleLabel->setAlignment(Qt::AlignCenter);
+        titleLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout->addWidget(titleLabel);
 
@@ -170,7 +170,7 @@ public:
 
         lineEditPassword = new QLineEdit(loginGroup);
         lineEditPassword->setObjectName("lineEditPassword");
-        lineEditPassword->setEchoMode(QLineEdit::Password);
+        lineEditPassword->setEchoMode(QLineEdit::EchoMode::Password);
 
         verticalLayout_2->addWidget(lineEditPassword);
 
@@ -231,7 +231,7 @@ public:
 
         lineEditNewPassword = new QLineEdit(forgotGroup);
         lineEditNewPassword->setObjectName("lineEditNewPassword");
-        lineEditNewPassword->setEchoMode(QLineEdit::Password);
+        lineEditNewPassword->setEchoMode(QLineEdit::EchoMode::Password);
 
         verticalLayout_3->addWidget(lineEditNewPassword);
 

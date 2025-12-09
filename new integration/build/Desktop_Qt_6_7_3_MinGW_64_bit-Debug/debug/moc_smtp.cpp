@@ -6,7 +6,7 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../../../projetcpp-2a25-s1-smart-electronics-repair-shop-GestionClient/inetgration with login - arduoino/smtp.h"
+#include "../../../../projetcpp-2a25-s1-smart-electronics-repair-shop-gestion-stock/inegration sarra/inetgration with login - arduoino/smtp.h"
 #include <QtCore/qmetatype.h>
 
 #include <QtCore/qtmochelpers.h>
